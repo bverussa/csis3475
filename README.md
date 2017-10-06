@@ -6,7 +6,8 @@
 #### CSIS 3475-071 – Data Structures and Algorithms
 ***Instructor:*** Stephen Chiong
 
-***Members:***
+**Members:**
+
 | Name | Student ID |
 | ------ | ------ |
 | Bruno Verussa Porto Cardoso | 300267277 |
