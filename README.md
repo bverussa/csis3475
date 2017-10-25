@@ -11,7 +11,7 @@
 | Name | Student ID |
 | ------ | ------ |
 | Bruno Verussa Porto Cardoso | 300267277 |
-| Cristiane | 300XXX |
+| Cristiane Tiemi Tokoi | 300256625 |
 | Victor Luis | 300XXX |
 
 #### Project Topic: Creating a Database
