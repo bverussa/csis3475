@@ -12,3 +12,4 @@ October 28, 2017
 * Table Database will have a database default (master), which will have the table User and Permissions
 * Every table will have an "internal ID" to control the lines. This will be a column with a pre-defined name (SYSID), which cannot be used by the user
 * In the login, the user must select the database to connect
+* When implement delete, think about the SYSID logic
