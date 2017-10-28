@@ -13,3 +13,8 @@ October 28, 2017
 * Every table will have an "internal ID" to control the lines. This will be a column with a pre-defined name (SYSID), which cannot be used by the user
 * In the login, the user must select the database to connect
 * When implement delete, think about the SYSID logic
+
+### Ideas / Next steps
+
+* Create column sizes as 3rd line of the file
+* When the program opens for the first time, give the option to choose the folder to create the databases. Store this path in a file and create the basic structure before show the login screen (create database master, user admin). This option will appear only if the path is not chosen. Otherwise there will be an option in the menu to change the path. 
