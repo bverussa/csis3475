@@ -5,8 +5,8 @@ October 28, 2017
 * Files names are the tables names
 * Columns are separated by pipeline |
 * Every Table file will have the 2 first rows for the table structure. For example: 
-ID | name | salary  --> columns names
-int | text | double --> data types
+    * ID | name | salary  --> columns names
+    * int | text | double --> data types
 * Data types: int, text, double, bit
 * Table User will have a user default (admin, pwd: admin)
 * Table Database will have a database default (master), which will have the table User and Permissions
