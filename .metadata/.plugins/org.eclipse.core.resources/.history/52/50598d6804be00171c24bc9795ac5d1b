@@ -1,0 +1,33 @@
+import javax.swing.JOptionPane;
+
+public class Database
+{
+
+	private String dbName;
+	
+	public Database(int option)
+	{
+		//check user
+		switch(option)
+		{
+			case 1:
+				createDB(dbName);
+				break;
+			case 2:
+				deleteDB(dbName);
+				break;
+			default:
+				JOptionPane.showMessageDialog(null, "Please, enter a correct Database name");
+		}
+	}
+	
+	public void createDB (String dbName)
+	{
+		
+	}
+	
+	public void deleteDB(String dbName)
+	{
+		
+	}
+}

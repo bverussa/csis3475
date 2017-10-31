@@ -14,6 +14,7 @@ public class Login extends JFrame
 		this.setBounds(400, 130, 540, 410);
 		this.setLayout(null);
 		this.setTitle("CSIS3475 Project: Database");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() 

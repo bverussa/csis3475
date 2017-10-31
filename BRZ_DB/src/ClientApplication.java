@@ -1,18 +1,12 @@
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 public class ClientApplication extends JFrame 
 {
@@ -43,6 +37,7 @@ public class ClientApplication extends JFrame
 		this.setBounds(400, 130, 540, 410);
 		this.setLayout(null);
 		this.setTitle("CSIS3475 Project: Database");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		createMenu();
 		
@@ -67,6 +62,7 @@ public class ClientApplication extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				// Create database
+				new Database(1);
 			}
 		});
 		mDatabase.add(mCreateDatabase);
@@ -78,6 +74,7 @@ public class ClientApplication extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				// Delete database
+				new Database(2);
 			}
 		});
 		mDatabase.add(mDeleteDatabase);
@@ -193,6 +190,7 @@ public class ClientApplication extends JFrame
 		
 		// Menu Users - end
 		
+		// Set Menu Bar
 		this.setJMenuBar(menuBar);
-	}
+	}	
 }
