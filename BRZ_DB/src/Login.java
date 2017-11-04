@@ -32,6 +32,9 @@ public class Login extends JFrame
 	public static void main(String[] args) 
 	{
 		new Login();
+		
+		/*String test = Query.run("INSERT INTO tblEmployee (ID, FName, LName) VALUES (1, Cris, Tokoi)", "dbCompany");
+		System.out.println(test);*/
 	}
 	
 	private void login()
