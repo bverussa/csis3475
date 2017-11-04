@@ -18,7 +18,10 @@ October 28, 2017
 
 * Command should be: 
     ##### INSERT INTO [*table name*] ([*columns*]) VALUES ([*values*])
-* It can include only the columns to insert. The columns not specified will be inserted as *NULL*
+* The columns and values are separated by comma ","
+* It is possible to list only the columns to insert values in the [*columns*] part. The columns not specified will be inserted as *NULL*
+* The values for the data type bit are 0 or 1
+* The decimal separator for double is dot "."
 * We did not implemented *PRIMARY KEY* neither *FOREIGN KEY* at this time
 * We did not implemented *auto identity* neither *unique* fields at this time
 * Some scenarios to test: 
