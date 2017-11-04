@@ -14,7 +14,23 @@ October 28, 2017
 * In the login, the user must select the database to connect
 * When implement delete, think about the SYSID logic
 
+### INSERT
+
+* Command should be: 
+    ##### INSERT INTO [*table name*] ([*columns*]) VALUES ([*values*])
+* It can include only the columns to insert. The columns not specified will be inserted as *NULL*
+* We did not implemented *PRIMARY KEY* neither *FOREIGN KEY* at this time
+* We did not implemented *auto identity* neither *unique* fields at this time
+* Some scenarios to test: 
+   - Insert all columns correctly
+   - Insert only some columns and check if the others will be included as NULL
+   - Try to insert columns with wrong names
+   - Try to insert values with the wrong data type
+   - Try to insert columns with a different order than the table 
+
+
 ### Ideas / Next steps
 
 * Create column sizes as 3rd line of the file
 * When the program opens for the first time, give the option to choose the folder to create the databases. Store this path in a file and create the basic structure before show the login screen (create database master, user admin). This option will appear only if the path is not chosen. Otherwise there will be an option in the menu to change the path. 
+* Improve the insert class to include more options to run the query (e.g. *INSERT INTO [table name] VALUES ([values])* >> without specifying the columns)
