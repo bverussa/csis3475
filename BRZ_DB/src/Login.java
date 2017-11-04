@@ -33,7 +33,7 @@ public class Login extends JFrame
 	{
 		new Login();
 		
-		/*String test = Query.run("INSERT INTO tblEmployee (ID, FName, LName) VALUES (1, Cris, Tokoi)", "dbCompany");
+		/*String test = Query.run("INSERT INTO tblUser (ID, Username, Password) VALUES (2, Cris, Tokoi)", "master");
 		System.out.println(test);*/
 	}
 	
