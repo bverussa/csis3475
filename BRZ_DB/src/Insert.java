@@ -4,8 +4,8 @@ import java.util.regex.*;
 
 public class Insert 
 {
-	private final static String PATTERN = "INSERT INTO ([\\w\\d_]+) \\(([\\w\\d_,\\s]+)\\) VALUES \\(([\\w\\d_,\\s]+)\\)";
-	private final static String REGEX = "((?<=(INSERT\\sINTO\\s))[\\w\\d_]+(?=\\s+))|((?<=\\()([\\w\\d_,\\s]+)+(?=\\)))";
+	private final static String PATTERN = "INSERT INTO ([\\w\\d_]+) \\(([\\w\\d_,\\s]+)\\) VALUES \\(([\\w\\d_.,\\s]+)\\)";
+	private final static String REGEX = "((?<=(INSERT\\sINTO\\s))[\\w\\d_]+(?=\\s+))|((?<=\\()([\\w\\d_.,\\s]+)+(?=\\)))";
 	
 	private static String tableName; 
     private static ArrayList<String> columns;
@@ -95,16 +95,22 @@ public class Insert
 	                    			finalValues.add(values.get(index));
 	                    	}
 	                    	
-	                    	// TODO: match the data type in the query with the file
-	                    	
-	                    	
+	                    	// match the data type in the query with the file
 	                    	// create the string line with the values of the query
+	                    	boolean typeValid = true;
 	                    	String writeValues = tbl.nextSysID + "|";
-	                    	for (String val : finalValues)
-	                    		writeValues += val + "|";
+	                    	for (int j = 0; j < finalValues.size(); j++) 
+	                    	{
+	                    		typeValid = DataType.isValid(tbl.types.get(j+1), finalValues.get(j));
+	                    		if(!typeValid) break;
+	                    		else writeValues += finalValues.get(j) + "|";
+	                    	}
 	                    	
-	                		// write the line in the file
-	                    	returnMsg = TableFile.writeLine(databaseName, tableName, writeValues);
+	                    	if(!typeValid) 
+	                    		returnMsg = "Invalid data type.";
+	                    	else 
+		                		// write the line in the file
+		                    	returnMsg = TableFile.writeLine(databaseName, tableName, writeValues);
         				}
 	        		}
 	        	}

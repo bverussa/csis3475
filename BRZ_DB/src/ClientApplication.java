@@ -10,7 +10,7 @@ import javax.swing.JMenuItem;
 
 public class ClientApplication extends JFrame 
 {
-	private JMenuBar menuBar;
+	private JMenuBar menuBar; 
 	
 	private JMenu mDatabase;
 	private JMenuItem mCreateDatabase;
