@@ -2,11 +2,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 public class ClientApplication extends JFrame 
 {
@@ -31,6 +34,12 @@ public class ClientApplication extends JFrame
 	
 	private JLabel lbl;
 	
+	private JTextArea txtQuery;
+	private JScrollPane scQuery;
+	private JTextArea txtResult;
+	private JScrollPane scResult;
+	private JButton btnRun;
+	
 	public ClientApplication()
 	{
 		this.setVisible(true);
@@ -43,6 +52,46 @@ public class ClientApplication extends JFrame
 		
 		lbl = new JLabel("Welcome! Choose an option from the menu above to start.");
 		Util.addComponent(this, lbl, 80, 60, 560, 20);
+		
+		txtQuery = new JTextArea();
+		scQuery = new JScrollPane(txtQuery);
+		Util.addComponent(this, scQuery, 15, 15, 490, 140);
+		
+		txtResult = new JTextArea();
+		txtResult.setEditable(false);
+		scResult = new JScrollPane(txtResult);
+		Util.addComponent(this, scResult, 15, 165, 490, 140);
+		
+		btnRun = new JButton("Run Query");
+		btnRun.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				// Query for tests
+				// INSERT INTO tblUser (ID, Username, Password) VALUES (3, Cris, Tokoi)
+				
+				//TODO: get database name selected by the user
+				String databaseName = "master";
+				
+				ReturnValue r = Query.run(txtQuery.getText(), databaseName);
+				txtResult.setText(r.msg);
+			}
+		});
+		
+		Util.addComponent(this, btnRun, 400, 315, 100, 20);
+		
+		setMainVisible(true);
+	}
+	
+	private void setMainVisible(boolean visible)
+	{
+		lbl.setVisible(visible);
+		txtQuery.setVisible(!visible);
+		scQuery.setVisible(!visible);
+		txtResult.setVisible(!visible);
+		scResult.setVisible(!visible);
+		btnRun.setVisible(!visible);
 	}
 	
 	private void createMenu()
@@ -85,7 +134,7 @@ public class ClientApplication extends JFrame
 		
 		// Menu Table - begin 
 		
-		mTable = new JMenu("Table");
+		/*mTable = new JMenu("Table");
 		mTable.setMnemonic(KeyEvent.VK_T);
 		menuBar.add(mTable);
 		
@@ -122,7 +171,7 @@ public class ClientApplication extends JFrame
 		});
 		mTable.add(mDeleteTable);
 
-		menuBar.add(mTable);
+		menuBar.add(mTable);*/
 		
 		// Menu Table - end
 		
@@ -138,7 +187,7 @@ public class ClientApplication extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				// New Query
+				setMainVisible(false);
 			}
 		});
 		mQuery.add(mNewQuery);

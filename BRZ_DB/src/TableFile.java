@@ -3,8 +3,13 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class TableFile 
 {
@@ -22,7 +27,7 @@ public class TableFile
 				tableName);
 	}
 	
-	public static String writeLine(String databaseName, String tableName, String value)
+	public static boolean writeLine(String databaseName, String tableName, String value)
 	{
 		String filename = getFullPath(databaseName, tableName);
         
@@ -30,15 +35,36 @@ public class TableFile
 		{
 			FileWriter fwriter = new FileWriter(filename, true);
 	    	BufferedWriter bf = new BufferedWriter(fwriter);
-	    	bf.append(System.lineSeparator());
+	    	//bf.append(System.lineSeparator());
 	        bf.append(value);
 	        bf.close();
 	        
-	        return "Query executed successfully!";
+	        return true;
 		}
 		catch(IOException ex)
 		{
-			return "Error to execute the query.";
+			return false;
+		}
+	}
+	
+	
+	//TODO: check a better way to solve it
+	public static boolean writeLine(String databaseName, String tableName, String value, int lineIndex)
+	{
+		try
+		{
+			Path path = Paths.get(getFullPath(databaseName, tableName));
+			List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+			lines.remove(lineIndex);
+			lines.add(lineIndex, value);
+			
+			Files.write(path, lines, StandardCharsets.UTF_8);
+			
+			return true;
+		}
+		catch(IOException ex)
+		{
+			return false;
 		}
 	}
 	
@@ -50,8 +76,6 @@ public class TableFile
 		{
 			FileReader freader = new FileReader(filename);
 	        BufferedReader br = new BufferedReader(freader);
-	        
-	        int lineCount = 1;
 	        
 	        Table tbl = new Table();
 
@@ -67,6 +91,10 @@ public class TableFile
 	        {
 	        	tbl.columns = new ArrayList<String>(Arrays.asList(data.split("\\|")));
 	        	
+	        	// the first column contains the SYSID in parenthesis
+	        	tbl.nextSysID = Integer.parseInt(tbl.columns.get(0).split("\\(")[1].replace(")", ""));
+	        	tbl.nextSysID++;
+	        	
 	        	// read the second line (types)
 	            data = br.readLine();
 	            
@@ -76,22 +104,14 @@ public class TableFile
 	            	return null;
 	            }
 	            else 
-	            {
 	            	tbl.types = new ArrayList<String>(Arrays.asList(data.split("\\|")));
-	            		
-	            	// loop all the lines of the file to get the last SYSID
-                	while ((data = br.readLine()) != null) 
-                		lineCount++;
-                	
-                	tbl.nextSysID = lineCount;
-	            }
 	        }
 	        
 	        br.close();
 	        
 	        return tbl;
 		}
-		catch(IOException ex)
+		catch(Exception ex)
 		{
 			return null;
 		}

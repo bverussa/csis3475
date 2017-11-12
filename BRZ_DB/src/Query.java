@@ -1,7 +1,7 @@
 
 public class Query 
 {
-	public static String run (String query, String databaseName)
+	public static ReturnValue run (String query, String databaseName)
 	{
 		String command = query.split(" ")[0];
 		
@@ -16,7 +16,7 @@ public class Query
 			//case "DELETE":
 				//return Delete.run(query, databaseName);
 			default: 
-				return "Invalid command";
+				return new ReturnValue();
 		}
 	}
 }

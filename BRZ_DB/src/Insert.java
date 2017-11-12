@@ -1,5 +1,10 @@
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.*;
 
 public class Insert 
@@ -51,34 +56,34 @@ public class Insert
 		return success;
 	}
 	
-	public static String run(String query, String databaseName) 
+	public static ReturnValue run(String query, String databaseName) 
 	{
-		String returnMsg = "";
-		
+		ReturnValue r = new ReturnValue();
+
 		// check if the command is valid using regular expression
         if (!isCommandValid(query)) 
-        	returnMsg = "Invalid query. Please check if you entered the correct command.";
+        	r.msg = "Invalid query. Please check if you entered the correct command.";
         else
     	{
         	// extract information from query using regular expression and matcher
         	if(!parseQuery(query))
-        		returnMsg = "Error to parse the query.";
+        		r.msg = "Error to parse the query.";
         	else
         	{
 	        	// match the columns x values
 	        	if(columns.size() != values.size())
-	        		returnMsg = "The number of columns does not correspond to the number of values. Please check your query.";
+	        		r.msg = "The number of columns does not correspond to the number of values. Please check your query.";
 	        	else 
 	        	{
 	        		Table tbl = TableFile.readTable(databaseName, tableName);
 	        		
 	        		if (tbl == null)
-	        			returnMsg = "Error on table configuration. Please check the table file.";
+	        			r.msg = "Error on table configuration. Please check the table file.";
 	        		else 
 	        		{
                     	// match the columns in the query with the file 
         				if (!TableFile.columnsValid(tbl, columns))
-        					returnMsg = "Invalid column. Please check your command.";
+        					r.msg = "Invalid column. Please check your command.";
         				else 
         				{
 	                    	ArrayList<String> finalValues = new ArrayList<String>();
@@ -86,6 +91,7 @@ public class Insert
 	                		// fill the values of the columns not included in the query (null)
 	                    	// and put the values in the same order as the columns in the file
 	                    	int index;
+	                    	String columnsUpdated = "SYSID(" + tbl.nextSysID + ")|";
 	                    	for (int i = 1; i < tbl.columns.size(); i++)
 	                    	{
 	                    		index = columns.indexOf(tbl.columns.get(i));
@@ -93,6 +99,8 @@ public class Insert
 	                    			finalValues.add("NULL");
 	                    		else
 	                    			finalValues.add(values.get(index));
+	                    		
+	                    		columnsUpdated += tbl.columns.get(i) + "|";
 	                    	}
 	                    	
 	                    	// match the data type in the query with the file
@@ -107,16 +115,29 @@ public class Insert
 	                    	}
 	                    	
 	                    	if(!typeValid) 
-	                    		returnMsg = "Invalid data type.";
+	                    		r.msg = "Invalid data type.";
 	                    	else 
+	                    	{
 		                		// write the line in the file
-		                    	returnMsg = TableFile.writeLine(databaseName, tableName, writeValues);
+	                    		if(TableFile.writeLine(databaseName, tableName, writeValues))
+	                    		{
+	                    			if(TableFile.writeLine(databaseName, tableName, columnsUpdated, 0))
+	                    			{
+		                    			r.msg = "Query executed successfully!";
+		                    			r.success = true;
+	                    			}
+	                    			else
+	                    				r.msg = "Error to update the system ID.";
+	                    		}
+	                    		else
+	                    			r.msg = "Error to execute the query.";
+	                    	}
         				}
 	        		}
 	        	}
 	        }
     	}
         
-        return returnMsg;
+        return r;
 	}
 }
