@@ -114,7 +114,6 @@ public class Database
 	public static ReturnValue createDB(String query)
 	{
 		ReturnValue r = new ReturnValue();
-		// CREATE DATABASE %DBNAME%
 		Database.dbName = query.split(" ")[2].toLowerCase();
 		
 		if (!Database.dbName.isEmpty())
@@ -206,7 +205,6 @@ public class Database
 	public static ReturnValue deleteDB(String query)
 	{
 		ReturnValue r = new ReturnValue();
-		// DELETE DATABASE %DBNAME%
 		Database.dbName = query.split(" ")[2].toLowerCase();
 		
 		if (!Database.dbName.isEmpty())

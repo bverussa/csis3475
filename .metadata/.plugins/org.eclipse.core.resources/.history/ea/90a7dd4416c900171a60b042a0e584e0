@@ -256,26 +256,7 @@ public class ClientApplication extends JFrame
 	{
 		ReturnValue r = new ReturnValue();
 		r.success = true;
-		
-		if (ClientApplication.currentDB != null && !ClientApplication.currentDB.isEmpty())
-		{
-			r.msg = ClientApplication.currentDB;
-		}
-		else
-		{
-			r.msg = "There is no database selected";
-		}
-			
-		return r;
-	}
-	
-	public static ReturnValue setCurrentDb(String query)
-	{
-		ReturnValue r = new ReturnValue();
-		// CONNECT %DBNAME%
-		ClientApplication.currentDB = query.split(" ")[1].toLowerCase();;
-		r.success = true;
-		r.msg = "Connected to " + ClientApplication.currentDB;
+		r.msg = ClientApplication.currentDB;
 		return r;
 	}
 }

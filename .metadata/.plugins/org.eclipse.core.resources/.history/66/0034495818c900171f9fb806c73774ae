@@ -8,17 +8,10 @@ public class Query
 		switch (command.toUpperCase()) 
 		{
 			case "CREATE":
-				if (query.split(" ")[1].toUpperCase().equals("DATABASE")) // CREATE DATABASE %DBNAME%
-				{
-					return Database.createDB(query);
-				}
-//				else if (query.split(" ")[1].toUpperCase().equals("TABLE"))
-//				{
-//					// CREATE TABLE %DBNAME%
-//				}
-			case "CONNECT": // CONNECT %DBNAME%
+				return Database.createDB(query);
+			case "CONNECT":
 				return ClientApplication.setCurrentDb(query);
-			case "SHOW": // SHOW %DBNAME%
+			case "SHOW":
 				return ClientApplication.getCurrentDb();
 			//case "SELECT":
 				//return Select.run(query, databaseName);
@@ -27,7 +20,7 @@ public class Query
 			//case "UPDATE":
 				//return Update.run(query, databaseName);
 			case "DELETE":
-				if (query.split(" ")[1].toUpperCase().equals("DATABASE")) // DELETE DATABASE %DBNAME%
+				if (query.split(" ")[1].toUpperCase().equals("DATABASE"))
 				{
 					return Database.deleteDB(query);
 				}
@@ -36,10 +29,7 @@ public class Query
 //					return Delete.run(query, databaseName);
 //				}
 			default: 
-				ReturnValue r = new ReturnValue();
-				r.success = false;
-				r.msg = "Invalid Syntax";
-				return r;
+				return new ReturnValue();
 		}
 	}
 }

@@ -1,3 +1,0 @@
-SYSID(1)|ID|Username|Password|
-int|int|text|text|
-1|1|admin|admin|

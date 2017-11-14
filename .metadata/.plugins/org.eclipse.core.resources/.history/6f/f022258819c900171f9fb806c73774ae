@@ -256,16 +256,7 @@ public class ClientApplication extends JFrame
 	{
 		ReturnValue r = new ReturnValue();
 		r.success = true;
-		
-		if (ClientApplication.currentDB != null && !ClientApplication.currentDB.isEmpty())
-		{
-			r.msg = ClientApplication.currentDB;
-		}
-		else
-		{
-			r.msg = "There is no database selected";
-		}
-			
+		r.msg = ClientApplication.currentDB;
 		return r;
 	}
 	
