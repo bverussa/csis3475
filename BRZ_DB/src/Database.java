@@ -1,4 +1,9 @@
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -7,41 +12,57 @@ import javax.swing.JTextField;
 
 public class Database
 {	
-	public Database(int option)
-	{
+	private static String dbName;
+	
+//	public Database()
+//	{
 		// First check if user is Admin - create function
 		
-		String dbName;
-		
-		switch(option)
-		{
-			case 1: // Create DB
-				dbName = getDBName("Create Database");
-				if (dbName != null) createDB(dbName);
-				break;
-			case 2: // Delete DB
-				dbName = getDBName("Delete Database");
-				if (dbName != null) deleteDB(dbName);
-				deleteDB(dbName);
-				break;
-			default:
-				JOptionPane.showMessageDialog(null, "Please, enter a correct Database name");
-		}
-	}
+//		String dbName;
+//		
+//		switch(option)
+//		{
+//			case 1: // Create DB
+//				dbName = getDBName("Create Database");
+//				if (dbName != null) createDB(dbName);
+//				break;
+//			case 2: // Delete DB
+//				dbName = getDBName("Delete Database");
+//				if (dbName != null) deleteDB(dbName);
+//				deleteDB(dbName);
+//				break;
+//			case 3: // Create Table
+//				
+//			default:
+//				JOptionPane.showMessageDialog(null, "Please, enter a correct Database name");
+//		}
+//	}
 	
-	private String getDBName(String msg)
+	private String getUserInput(int type, String msg)
 	{
-		JTextField dbName = new JTextField();
+		String label = "";
+		
+		switch(type)
+		{
+			case 1: // Database
+				label = "Database Name:";
+				break;
+			case 2: // Table
+				label = "Table Name:";
+				break;
+		}
+		
+		JTextField userInput = new JTextField();
 		final JComponent[] input = new JComponent[] 
 		{
-			new JLabel("Database Name:"), dbName
+			new JLabel(label), userInput
 		};
 		
 		int result = JOptionPane.showConfirmDialog(null, input, msg, JOptionPane.PLAIN_MESSAGE);
 		
 		if (result == JOptionPane.OK_OPTION)
 		{
-			return dbName.getText();
+			return userInput.getText();
 		}
 		else
 		{
@@ -49,55 +70,213 @@ public class Database
 		}
 	}
 	
-	private void createDB (String dbName)
+	public void createDB()
 	{
-		File database = new File("Databases/" + dbName);
+		Database.dbName = getUserInput(1, "Create Database").toLowerCase();
 		
-		if (!database.exists())
+		if (!Database.dbName.isEmpty())
 		{
-			boolean check = false;
+			File database = new File("Databases/" + dbName);
 			
-			try
+			if (!database.exists())
 			{
-				database.mkdirs();
-				check = true;
+				boolean check = false;
+				
+				try
+				{
+					database.mkdirs();
+					check = true;
+				}
+				catch(SecurityException e)
+				{
+					JOptionPane.showMessageDialog(null, e);
+				}
+				if (check)
+				{
+					ClientApplication.currentDB = Database.dbName;
+					JOptionPane.showMessageDialog(null, "Database " + dbName + " created!");
+				}
 			}
-			catch(SecurityException e)
+			else
 			{
-				JOptionPane.showMessageDialog(null, e);
-			}
-			if (check)
-			{
-				JOptionPane.showMessageDialog(null, "Database " + dbName + " created!");
+				JOptionPane.showMessageDialog(null, "Database " + dbName + " already exist!");
+				ClientApplication.currentDB = Database.dbName;
 			}
 		}
 		else
 		{
-			JOptionPane.showMessageDialog(null, "Database " + dbName + " already exist!");
+			Database.dbName = null;
+			ClientApplication.currentDB = Database.dbName;
+			JOptionPane.showMessageDialog(null, "Please, enter a database name");
 		}
 	}
 	
-	private void deleteDB(String dbName)
+	public static ReturnValue createDB(String query)
 	{
-		File database = new File("Databases/" + dbName);
+		ReturnValue r = new ReturnValue();
+		Database.dbName = query.split(" ")[2].toLowerCase();
 		
-		if (!database.exists())
+		if (!Database.dbName.isEmpty())
 		{
-			File[] tables = database.listFiles();
-	        if (tables != null)
-	        {
-	            for (int i = 0; i < tables.length; i++)
-	            {
-	                tables[i].delete();
-	            }
-	        }
-	        
-	        database.delete();
-	        JOptionPane.showMessageDialog(null, "Database " + dbName + " deleted!");
+			File database = new File("Databases/" + dbName);
+			
+			if (!database.exists())
+			{
+				boolean check = false;
+				
+				try
+				{
+					database.mkdirs();
+					check = true;
+				}
+				catch(SecurityException e)
+				{
+					r.success = false;
+					r.msg = e.toString();
+				}
+				
+				if (check)
+				{
+					ClientApplication.currentDB = Database.dbName;
+					r.success = true;
+					r.msg = "Database " + dbName + " created!";
+				}
+			}
+			else
+			{
+				ClientApplication.currentDB = Database.dbName;
+				r.success = false;
+				r.msg =  "Database " + dbName + " already exist!";
+			}
 		}
 		else
 		{
-			JOptionPane.showMessageDialog(null, "Database " + dbName + " does not exist!");
+			Database.dbName = null;
+			ClientApplication.currentDB = Database.dbName;
+			r.success = false;
+			r.msg = "Please, enter a database name";
+		}
+		return r;
+	}
+	
+	public void deleteDB()
+	{
+		Database.dbName = getUserInput(1, "Delete Database").toLowerCase();
+		
+		if (!Database.dbName.isEmpty())
+		{	
+			if (!Database.dbName.equals("master"))
+			{
+				File database = new File("Databases/" + Database.dbName);
+				
+				if (database.exists())
+				{
+					File[] tables = database.listFiles();
+			        if (tables != null)
+			        {
+			            for (int i = 0; i < tables.length; i++)
+			            {
+			                tables[i].delete();
+			            }
+			        }
+			        
+			        database.delete();
+			        ClientApplication.currentDB = null;
+			        JOptionPane.showMessageDialog(null, "Database " + Database.dbName + " deleted!");
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Database " + Database.dbName + " does not exist!");
+				}
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null, "You can not delete MASTER database!");
+				this.deleteDB();
+			}
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(null, "Please, enter a database name");
+			this.deleteDB();
+		}
+	}
+	
+	public static ReturnValue deleteDB(String query)
+	{
+		ReturnValue r = new ReturnValue();
+		Database.dbName = query.split(" ")[2].toLowerCase();
+		
+		if (!Database.dbName.isEmpty())
+		{	
+			if (!Database.dbName.equals("master"))
+			{
+				File database = new File("Databases/" + Database.dbName);
+				
+				if (database.exists())
+				{
+					File[] tables = database.listFiles();
+			        if (tables != null)
+			        {
+			            for (int i = 0; i < tables.length; i++)
+			            {
+			                tables[i].delete();
+			            }
+			        }
+			        
+			        database.delete();
+			        ClientApplication.currentDB = null;
+			        r.success = true;
+			        r.msg = "Database " + Database.dbName + " deleted!";
+			        
+				}
+				else
+				{
+					r.success = false;
+			        r.msg = "Database " + Database.dbName + " does not exist!";
+				}
+			}
+			else
+			{
+				r.success = false;
+		        r.msg = "You can not delete MASTER database!";
+			}
+		}
+		else
+		{
+			r.success = false;
+	        r.msg = "Please, enter a database name";
+		}
+		return r;
+	}
+	
+	public void createTable()
+	{
+		String tableName;
+		tableName = getUserInput(2, "Create Table");
+		String dbTable = Database.dbName + "/" + tableName;
+		Writer tableToDisk = null;
+		
+		try
+		{
+			tableToDisk = new BufferedWriter(
+					new OutputStreamWriter(
+							new FileOutputStream(dbTable), "utf-8"));
+		}
+		catch (IOException ex)
+		{
+			
+		}
+		finally
+		{
+			try
+			{
+				tableToDisk.close();
+			}
+			catch (Exception ex)
+			{
+			
+			}
 		}
 	}
 }

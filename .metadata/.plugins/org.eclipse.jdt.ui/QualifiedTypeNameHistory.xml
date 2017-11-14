@@ -5,4 +5,6 @@
 <fullyQualifiedTypeName name="javax.swing.JComponent"/>
 <fullyQualifiedTypeName name="javax.swing.JLabel"/>
 <fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="java.io.Writer"/>
 </qualifiedTypeNameHistroy>

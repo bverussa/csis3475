@@ -39,9 +39,11 @@ public class ClientApplication extends JFrame
 	private JTextArea txtResult;
 	private JScrollPane scResult;
 	private JButton btnRun;
+	public static String currentDB;
 	
 	public ClientApplication()
 	{
+		this.currentDB = "master";
 		this.setVisible(true);
 		this.setBounds(400, 130, 540, 410);
 		this.setLayout(null);
@@ -72,7 +74,8 @@ public class ClientApplication extends JFrame
 				// INSERT INTO tblUser (ID, Username, Password) VALUES (3, Cris, Tokoi)
 				
 				//TODO: get database name selected by the user
-				String databaseName = "master";
+				//String databaseName = "master";
+				String databaseName = ClientApplication.currentDB;
 				
 				ReturnValue r = Query.run(txtQuery.getText(), databaseName);
 				txtResult.setText(r.msg);
@@ -111,7 +114,9 @@ public class ClientApplication extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				// Create database
-				new Database(1);
+				Database db = new Database();
+				db.createDB();
+				
 			}
 		});
 		mDatabase.add(mCreateDatabase);
@@ -123,7 +128,8 @@ public class ClientApplication extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				// Delete database
-				new Database(2);
+				Database db = new Database();
+				db.deleteDB();
 			}
 		});
 		mDatabase.add(mDeleteDatabase);
@@ -145,6 +151,9 @@ public class ClientApplication extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				// Create table
+				Database db = new Database();
+				db.createTable();
+				
 			}
 		});
 		mTable.add(mCreateTable);
@@ -241,5 +250,13 @@ public class ClientApplication extends JFrame
 		
 		// Set Menu Bar
 		this.setJMenuBar(menuBar);
-	}	
+	}
+	
+	public static ReturnValue getCurrentDb()
+	{
+		ReturnValue r = new ReturnValue();
+		r.success = true;
+		r.msg = ClientApplication.currentDB;
+		return r;
+	}
 }

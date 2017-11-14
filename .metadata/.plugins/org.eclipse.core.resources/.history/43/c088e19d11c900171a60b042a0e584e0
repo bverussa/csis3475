@@ -1,0 +1,30 @@
+
+public class Query 
+{
+	public static ReturnValue run (String query, String databaseName)
+	{
+		String command = query.split(" ")[0];
+		
+		switch (command.toUpperCase()) 
+		{
+			//case "CREATE":
+			//case "DELETE TABLE':
+			//case "CONNECT":
+			case "SHOW DATABASE":
+				ReturnValue r = new  ReturnValue();
+				r.success = true;
+				r.msg = ClientApplication.currentDB;
+				return r;
+			//case "SELECT":
+				//return Select.run(query, databaseName);
+			case "INSERT":
+				return Insert.run(query, databaseName);
+			//case "UPDATE":
+				//return Update.run(query, databaseName);
+			//case "DELETE":
+				//return Delete.run(query, databaseName);
+			default: 
+				return new ReturnValue();
+		}
+	}
+}
