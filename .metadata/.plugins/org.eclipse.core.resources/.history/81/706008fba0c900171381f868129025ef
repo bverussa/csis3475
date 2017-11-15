@@ -12,10 +12,10 @@ public class Query
 				{
 					return Database.createDB(query);
 				}
-				else if (query.split(" ")[1].toUpperCase().equals("TABLE")) // CREATE TABLE %TABLENAME%
-				{
-					return Database.createTable(query);
-				}
+//				else if (query.split(" ")[1].toUpperCase().equals("TABLE"))
+//				{
+//					// CREATE TABLE %DBNAME%
+//				}
 			case "CONNECT": // CONNECT %DBNAME%
 				return ClientApplication.setCurrentDb(query);
 			case "SHOW": // SHOW %DBNAME%

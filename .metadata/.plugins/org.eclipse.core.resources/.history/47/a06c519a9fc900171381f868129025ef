@@ -13,7 +13,30 @@ import javax.swing.JTextField;
 public class Database
 {	
 	private static String dbName;
-	private static String tableName;
+	
+//	public Database()
+//	{
+		// First check if user is Admin - create function
+		
+//		String dbName;
+//		
+//		switch(option)
+//		{
+//			case 1: // Create DB
+//				dbName = getDBName("Create Database");
+//				if (dbName != null) createDB(dbName);
+//				break;
+//			case 2: // Delete DB
+//				dbName = getDBName("Delete Database");
+//				if (dbName != null) deleteDB(dbName);
+//				deleteDB(dbName);
+//				break;
+//			case 3: // Create Table
+//				
+//			default:
+//				JOptionPane.showMessageDialog(null, "Please, enter a correct Database name");
+//		}
+//	}
 	
 	private String getUserInput(int type, String msg)
 	{
@@ -64,9 +87,9 @@ public class Database
 					database.mkdirs();
 					check = true;
 				}
-				catch(SecurityException ex)
+				catch(SecurityException e)
 				{
-					JOptionPane.showMessageDialog(null, ex);
+					JOptionPane.showMessageDialog(null, e);
 				}
 				if (check)
 				{
@@ -107,10 +130,10 @@ public class Database
 					database.mkdirs();
 					check = true;
 				}
-				catch(SecurityException ex)
+				catch(SecurityException e)
 				{
 					r.success = false;
-					r.msg = ex.toString();
+					r.msg = e.toString();
 				}
 				
 				if (check)
@@ -229,13 +252,11 @@ public class Database
 		return r;
 	}
 	
-	public static ReturnValue createTable(String query)
+	public void createTable()
 	{
-		ReturnValue r = new ReturnValue();
-		// CREATE TABLE %TABLENAME%
-		Database.tableName = query.split(" ")[2].toLowerCase();
-		Database.dbName = ClientApplication.currentDB;
-		String dbTable = "Databases/" + Database.dbName + "/" + tableName + ".txt";
+		String tableName;
+		tableName = getUserInput(2, "Create Table");
+		String dbTable = Database.dbName + "/" + tableName;
 		Writer tableToDisk = null;
 		
 		try
@@ -243,27 +264,21 @@ public class Database
 			tableToDisk = new BufferedWriter(
 					new OutputStreamWriter(
 							new FileOutputStream(dbTable), "utf-8"));
-			
 		}
 		catch (IOException ex)
 		{
-			r.success = false;
-			r.msg = ex.toString();
+			
 		}
 		finally
 		{
 			try
 			{
 				tableToDisk.close();
-				r.success = true;
-				r.msg = "Table " + Database.tableName + " created in the database " + Database.dbName;
 			}
 			catch (Exception ex)
 			{
-				r.success = false;
-				r.msg = ex.toString();
+			
 			}
 		}
-		return r;
 	}
 }

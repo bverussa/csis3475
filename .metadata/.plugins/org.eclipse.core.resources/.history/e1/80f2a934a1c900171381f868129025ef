@@ -235,7 +235,7 @@ public class Database
 		// CREATE TABLE %TABLENAME%
 		Database.tableName = query.split(" ")[2].toLowerCase();
 		Database.dbName = ClientApplication.currentDB;
-		String dbTable = "Databases/" + Database.dbName + "/" + tableName + ".txt";
+		String dbTable = "Databases/" + Database.dbName + "/" + tableName;
 		Writer tableToDisk = null;
 		
 		try
