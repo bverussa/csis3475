@@ -116,8 +116,7 @@ public class User extends JFrame {
 			}
 		}else{
 			r.msg = "User or Password is no valid . Please check if you have entered correct  .";
-		}
-		
+		}		
 	}
 	
 	public static void InsertUser(String name,String password, String userType){
