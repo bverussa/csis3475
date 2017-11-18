@@ -9,7 +9,7 @@ public class Util
 {
 	public static String DB_MASTER = "master";
 	public static String TBL_USER = "tblUser";
-	public static String USER_ADMIN = "admin";
+	public static String USER_ADMIN = "admin"; 
 	
 	public static void addComponent(JFrame frame, Component c, int x, int y, int w, int h) 
 	{
