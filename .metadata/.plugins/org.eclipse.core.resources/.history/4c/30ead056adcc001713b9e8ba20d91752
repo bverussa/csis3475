@@ -261,17 +261,14 @@ public class Database
 			try
 			{
 				tableToDisk.close();
-				
 				if (!Util.isCommandValid(query, PATTERN)) 
-				{
-					r.success = false;
 		        	r.msg = "Invalid query. Please check if you entered the correct command.";
-				}
 		        else
 		        {
-		        	r.success = true;
-					r.msg = "Table " + Database.tableName + " created in the database " + Database.dbName;
+		        	
 		        }
+				r.success = true;
+				r.msg = "Table " + Database.tableName + " created in the database " + Database.dbName;
 			}
 			catch (Exception ex)
 			{

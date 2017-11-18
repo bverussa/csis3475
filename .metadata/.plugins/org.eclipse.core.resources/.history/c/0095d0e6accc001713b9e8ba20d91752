@@ -4,10 +4,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -18,8 +14,6 @@ public class Database
 {	
 	private static String dbName;
 	private static String tableName;
-	private final static String PATTERN = "CREATE TABLE ([\\w\\d_]+) \\(([\\w\\d_,\\s]+)\\) VALUES \\(([\\w\\d_.,\\s]+)\\)";
-	private final static String REGEX = "((?<=(CREATE\\sTABLE\\s))[\\w\\d_]+(?=\\s+))|((?<=\\()([\\w\\d_.,\\s]+)+(?=\\)))";
 	
 	private String getUserInput(int type, String msg)
 	{
@@ -236,7 +230,10 @@ public class Database
 	}
 	
 	public static ReturnValue createTable(String query)
-	{	
+	{
+		String PATTERN = "CREATE TABLE ([\\w\\d_]+) \\(([\\w\\d_,\\s]+)\\) VALUES \\(([\\w\\d_.,\\s]+)\\)";
+		String REGEX = "((?<=(INSERT\\sINTO\\s))[\\w\\d_]+(?=\\s+))|((?<=\\()([\\w\\d_.,\\s]+)+(?=\\)))";
+		
 		ReturnValue r = new ReturnValue();
 		// CREATE TABLE %TABLENAME%
 		Database.tableName = query.split(" ")[2].toLowerCase();
@@ -261,17 +258,8 @@ public class Database
 			try
 			{
 				tableToDisk.close();
-				
-				if (!Util.isCommandValid(query, PATTERN)) 
-				{
-					r.success = false;
-		        	r.msg = "Invalid query. Please check if you entered the correct command.";
-				}
-		        else
-		        {
-		        	r.success = true;
-					r.msg = "Table " + Database.tableName + " created in the database " + Database.dbName;
-		        }
+				r.success = true;
+				r.msg = "Table " + Database.tableName + " created in the database " + Database.dbName;
 			}
 			catch (Exception ex)
 			{
@@ -280,37 +268,5 @@ public class Database
 			}
 		}
 		return r;
-	}
-	
-	private static boolean parseQuery(String query)
-	{
-		Pattern pattern = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(query);
-		boolean success = false;
-		String line;
-		
-		// there are 3 groups to match: table name, columns and values
-		if (matcher.find())
-		{
-			// get the table name
-        	tableName = matcher.group(0);
-        	
-        	// get the columns to insert
-        	if (matcher.find())
-	        {
-        		line = matcher.group(0).replace(" ", "");
-	        	columns = new ArrayList<String>(Arrays.asList(line.split(",")));
-	        	
-	        	// get the values
-	        	if (matcher.find())
-		        {
-	        		line = matcher.group(0).replace(" ", "");
-		        	values = new ArrayList<String>(Arrays.asList(line.split(",")));
-		        	success = true;
-		        }
-	        }
-		}
-		
-		return success;
 	}
 }
