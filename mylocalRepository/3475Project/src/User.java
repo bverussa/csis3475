@@ -100,8 +100,7 @@ public class User extends JFrame {
 	}
 	
 	public static void InsertUser(String name,String password, String userType){
-		Insert.run("INSERT INTO tblUser values("+name+","+password+","+userType+")", "master");
-		
+		Insert.run("INSERT INTO tblUser values("+name+","+password+","+userType+")", "master");	
 	}
 
 }
