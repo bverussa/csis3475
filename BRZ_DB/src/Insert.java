@@ -7,6 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.*;
 
+import sysObjects.DataType;
+import sysObjects.ReturnValue;
+import sysObjects.Table;
+import sysObjects.TableFile;
+
 public class Insert 
 {
 	private final static String PATTERN = "INSERT INTO ([\\w\\d_]+) \\(([\\w\\d_,\\s]+)\\) VALUES \\(([\\w\\d_.,\\s]+)\\)";

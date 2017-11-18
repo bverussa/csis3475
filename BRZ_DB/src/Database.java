@@ -14,6 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import sysObjects.ReturnValue;
+import sysObjects.Util;
+
 public class Database
 {	
 	private static String dbName;

@@ -11,6 +11,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import sysObjects.ReturnValue;
+import sysObjects.Util;
+
 public class ClientApplication extends JFrame 
 {
 	private JMenuBar menuBar; 

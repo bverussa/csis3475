@@ -11,6 +11,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.plaf.basic.BasicBorders.RadioButtonBorder;
 
+import sysObjects.ReturnValue;
+
 public class User extends JFrame {
 	
 	private JLabel jlName,jlPassword,jlConfirm;

@@ -1,3 +1,4 @@
+import sysObjects.ReturnValue;
 
 public class Query 
 {
