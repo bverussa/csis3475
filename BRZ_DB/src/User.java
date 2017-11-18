@@ -1,4 +1,6 @@
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.PasswordAuthentication;
 
 import javax.swing.ButtonGroup;
@@ -48,9 +50,11 @@ public class User extends JFrame {
 		
 		rbAdmin = new JRadioButton("Administrator");
 		addMe(rbAdmin,230, 10, 120, 20);
+		rbAdmin.setActionCommand("Admin");
 		
 		rbUser = new JRadioButton("User");
 		addMe(rbUser,230, 30, 120, 20);
+		rbUser.setActionCommand("User");
 		
 		btnCreate = new JButton("Create");
 		addMe(btnCreate, 30, 80, 90, 20);
@@ -58,6 +62,15 @@ public class User extends JFrame {
 		bgGroup = new ButtonGroup();
 		bgGroup.add(rbAdmin);
 		bgGroup.add(rbUser);
+		
+		btnCreate.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				validateUser();
+			}
+		});
 	}
 	
 	
@@ -78,25 +91,33 @@ public class User extends JFrame {
 		
 		if(!(tfName.getText()==null) ){
 			name = tfName.getText();
-		}else{
-			r.msg = "Invalid User Name. Please check if you entered correct name .";
-		}if(!(tfPassword.getText()==null) ){
-			if(!(tfConfirm.getText()==null)){
-				if(tfPassword.getText().equals(tfConfirm.getText())){
-					password = tfPassword.getText();
+			
+			if(!(tfPassword.getText()==null) ){
+				if(!(tfConfirm.getText()==null)){
+					if(tfPassword.getText().equals(tfConfirm.getText())){
+						password = tfPassword.getText();
+						
+						if(!(bgGroup.getSelection()==null)){
+							user = bgGroup.getSelection().getActionCommand();
+							InsertUser(name, password, user);
+						}else{
+							r.msg = "Invalid User Type . Please check if you have selected the user type  .";
+						}
+						
+					}else{
+						r.msg = "Password does not match . Please check if you entered correct password  .";
+					}
 				}else{
 					r.msg = "Password does not match . Please check if you entered correct password  .";
 				}
-			}else{
-				r.msg = "Invalid confirmation . Please check if you entered correct password  .";
 			}
+				else{
+				r.msg = "Invalid Password . Please check if you entered correct password  .";
+			}
+		}else{
+			r.msg = "User or Password is no valid . Please check if you have entered correct  .";
 		}
-			else{
-			r.msg = "Invalid Password . Please check if you entered correct password  .";
-		}if(!(bgGroup.getSelection()==null)){
-			user = bgGroup.getSelection().toString();
-		}
-		r.msg = "Invalid User Type . Please check if you have selected the user type  .";
+		
 	}
 	
 	public static void InsertUser(String name,String password, String userType){
