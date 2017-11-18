@@ -82,7 +82,7 @@ public class User extends JFrame {
 	public static void main(String args[]){
 		new User();
 		
-	}
+}
 	
 	//|| !tfPassword.getText().trim().equals("")
 	public static void validateUser(){
