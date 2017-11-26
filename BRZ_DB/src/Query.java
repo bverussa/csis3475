@@ -32,9 +32,9 @@ public class Query
 				{
 					return Database.deleteDB(query);
 				}
-//				else
+//				else if (query.split(" ")[1].toUpperCase().equals("TABLE")) // DELETE TABLE %DBNAME%
 //				{
-//					return Delete.run(query, databaseName);
+//					return Database.deleteTable(query);
 //				}
 			default: 
 				ReturnValue r = new ReturnValue();

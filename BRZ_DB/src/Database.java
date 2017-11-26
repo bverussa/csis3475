@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,8 +20,11 @@ public class Database
 {	
 	private static String dbName;
 	private static String tableName;
-	private final static String PATTERN = "CREATE TABLE ([\\w\\d_]+) \\(([\\w\\d_,\\s]+)\\) VALUES \\(([\\w\\d_.,\\s]+)\\)";
-	private final static String REGEX = "((?<=(CREATE\\sTABLE\\s))[\\w\\d_]+(?=\\s+))|((?<=\\()([\\w\\d_.,\\s]+)+(?=\\)))";
+	private static ArrayList<String> columns;
+    private static ArrayList<String> dataType;
+	// command: create table %tableName% (%columnName% %dataType%, %columnName% %dataType%)
+	// dataTypes: int | text | double --> data types
+	private final static String PATTERN = "(CREATE TABLE) ([\\w\\d_]+) [\\(]((([\\w\\d_]+) (INT|TEXT|DOUBLE|BIT)([\\,]?))+|(([\\w\\d_]+) (INT|TEXT|DOUBLE|BIT))+)[\\)]";
 	
 	private String getUserInput(int type, String msg)
 	{
@@ -58,7 +60,7 @@ public class Database
 	
 	public void createDB()
 	{
-		Database.dbName = getUserInput(1, "Create Database").toLowerCase();
+		Database.dbName = getUserInput(1, "Create Database").toLowerCase().trim();
 		
 		if (!Database.dbName.isEmpty())
 		{
@@ -152,7 +154,7 @@ public class Database
 		
 		if (!Database.dbName.isEmpty())
 		{	
-			if (!Database.dbName.equals("master"))
+			if (!Database.dbName.equals(Util.DB_MASTER))
 			{
 				File database = new File("Databases/" + Database.dbName);
 				
@@ -197,7 +199,7 @@ public class Database
 		
 		if (!Database.dbName.isEmpty())
 		{	
-			if (!Database.dbName.equals("master"))
+			if (!Database.dbName.equals(Util.DB_MASTER))
 			{
 				File database = new File("Databases/" + Database.dbName);
 				
@@ -263,8 +265,6 @@ public class Database
 		{
 			try
 			{
-				tableToDisk.close();
-				
 				if (!Util.isCommandValid(query, PATTERN)) 
 				{
 					r.success = false;
@@ -272,8 +272,59 @@ public class Database
 				}
 		        else
 		        {
-		        	r.success = true;
-					r.msg = "Table " + Database.tableName + " created in the database " + Database.dbName;
+		        	if(!parseQuery(query))
+		        		r.msg = "Error to parse the query.";
+		        	else
+		        	{
+			        	// match the columns x dataType
+			        	if(columns.size() != dataType.size())
+			        		r.msg = "The number of columns does not correspond to the number of dataTypes. Please check your query.";
+			        	else 
+			        	{
+	        			   	ArrayList<String> finalValues = new ArrayList<String>();
+	                    	
+	                		// fill the values of the columns not included in the query (null)
+	                    	// and put the values in the same order as the columns in the file
+	                    	int index;
+	                    	String columnsUpdated = "SYSID(0)|";
+	                    	for (int i = 0; i < columns.size(); i++)
+	                    	{
+	                    		index = columns.indexOf(columns.get(i));
+	                    		if (index == -1) // if the column was not included in the query
+	                    			finalValues.add("NULL");
+	                    		else
+	                    			finalValues.add(dataType.get(index));
+	                    		
+	                    		columnsUpdated += columns.get(i) + "|";
+	                    	}
+	                    	
+	                    	// match the data type in the query with the file
+	                    	// create the string line with the values of the query
+	                    	boolean typeValid = true;
+	                    	String writeValues = "";
+	                    	for (int j = 0; j < finalValues.size(); j++) 
+	                    	{
+//	                    		typeValid = DataType.isValid(types.get(j+1), finalValues.get(j));
+//	                    		if(!typeValid) break;
+//	                    		else 
+	                    			writeValues += finalValues.get(j) + "|";
+	                    	}
+	                    	
+	                    	if(!typeValid) 
+	                    		r.msg = "Invalid data type.";
+	                    	else 
+	                    	{
+		                		// write the line in the file
+	                    		tableToDisk.write(columnsUpdated);
+	                    		tableToDisk.write(writeValues);
+	                    		
+	                    		r.success = true;
+	                    		r.msg = "Table " + Database.tableName + " created in the database " + Database.dbName;
+	                    		
+	                    	}
+			                tableToDisk.close();
+			        	}
+		        	}
 		        }
 			}
 			catch (Exception ex)
@@ -287,31 +338,48 @@ public class Database
 	
 	private static boolean parseQuery(String query)
 	{
-		Pattern pattern = Pattern.compile(REGEX, Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(query);
+		Pattern patternRecv = Pattern.compile(PATTERN, Pattern.CASE_INSENSITIVE);
+		Matcher matcher = patternRecv.matcher(query);
 		boolean success = false;
 		String line;
 		
-		// there are 3 groups to match: table name, columns and values
+		// there are 3 groups to match: table name, columns and dataType
 		if (matcher.find())
 		{
 			// get the table name
-        	tableName = matcher.group(0);
+        	tableName = matcher.group(2);
+        	
+        	line = matcher.group(3);
+        	String[] groups = line.split(",");
+        	ArrayList<String> elem = new ArrayList<String>();
+        	
+        	for (String str : groups)
+        	{
+        		for (String e : str.split("\\s+"))
+        		{
+        			elem.add(e);
+        		}
+        	}
         	
         	// get the columns to insert
-        	if (matcher.find())
-	        {
-        		line = matcher.group(0).replace(" ", "");
-	        	columns = new ArrayList<String>(Arrays.asList(line.split(",")));
+        	columns = new ArrayList<String>();
+        	
+        	for (int i = 0; i < elem.size(); i+= 2) 
+        	{
+        		String col = elem.get(i).replace(" ", "");
+        		columns.add(col); 
+        	}
 	        	
-	        	// get the values
-	        	if (matcher.find())
-		        {
-	        		line = matcher.group(0).replace(" ", "");
-		        	values = new ArrayList<String>(Arrays.asList(line.split(",")));
-		        	success = true;
-		        }
-	        }
+	        // get the dataType
+	        dataType = new ArrayList<String>();
+	        
+	        for (int i = 1; i < elem.size(); i+= 2) 
+        	{
+        		String dt = elem.get(i).replace(" ", "");
+        		dataType.add(dt); 
+        	}
+	        
+		    success = true;
 		}
 		
 		return success;

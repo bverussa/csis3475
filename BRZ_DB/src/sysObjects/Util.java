@@ -19,8 +19,8 @@ public class Util
 	
 	public static boolean isCommandValid(String query, String pattern)
 	{
-		Pattern patternRec = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = patternRec.matcher(query);
+		Pattern patternRecv = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = patternRecv.matcher(query);
         
         return matcher.matches();
 	}
