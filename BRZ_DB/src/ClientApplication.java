@@ -80,7 +80,7 @@ public class ClientApplication extends JFrame
 				//String databaseName = "master";
 				String databaseName = ClientApplication.currentDB;
 				
-				ReturnValue r = Query.run(txtQuery.getText(), databaseName);
+				ReturnValue r = Query.run(txtQuery.getText().trim(), databaseName);
 				txtResult.setText(r.msg);
 			}
 		});

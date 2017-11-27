@@ -22,8 +22,6 @@ public class Database
 	private static String tableName;
 	private static ArrayList<String> columns;
     private static ArrayList<String> dataType;
-	// command: create table %tableName% (%columnName% %dataType%, %columnName% %dataType%)
-	// dataTypes: int | text | double --> data types
 	private final static String PATTERN = "(CREATE TABLE) ([\\w\\d_]+) [\\(]((([\\w\\d_]+) (INT|TEXT|DOUBLE|BIT)([\\,]?))+|(([\\w\\d_]+) (INT|TEXT|DOUBLE|BIT))+)[\\)]";
 	
 	private String getUserInput(int type, String msg)
@@ -243,7 +241,8 @@ public class Database
 	public static ReturnValue createTable(String query)
 	{	
 		ReturnValue r = new ReturnValue();
-		// CREATE TABLE %TABLENAME%
+		// command: create table %tableName% (%columnName% %dataType%, %columnName% %dataType%, ...)
+		// dataTypes: int | text | double | bit
 		Database.tableName = query.split(" ")[2].toLowerCase();
 		Database.dbName = ClientApplication.currentDB;
 		String dbTable = "Databases/" + Database.dbName + "/" + tableName + ".txt";
@@ -251,41 +250,31 @@ public class Database
 		
 		try
 		{
-			tableToDisk = new BufferedWriter(
-					new OutputStreamWriter(
-							new FileOutputStream(dbTable), "utf-8"));
-			
-		}
-		catch (IOException ex)
-		{
-			r.success = false;
-			r.msg = ex.toString();
-		}
-		finally
-		{
-			try
+			if (!Util.isCommandValid(query, PATTERN)) 
 			{
-				if (!Util.isCommandValid(query, PATTERN)) 
-				{
-					r.success = false;
-		        	r.msg = "Invalid query. Please check if you entered the correct command.";
-				}
-		        else
-		        {
-		        	if(!parseQuery(query))
-		        		r.msg = "Error to parse the query.";
-		        	else
-		        	{
-			        	// match the columns x dataType
+				r.success = false;
+	        	r.msg = "Invalid query. Please check if you entered the correct command.";
+			}
+	        else
+	        {
+	        	if(!parseQuery(query))
+	        		r.msg = "Error to parse the query.";
+	        	else
+	        	{
+	        		try
+	        		{
+	        			tableToDisk = new BufferedWriter(
+		    					new OutputStreamWriter(
+		    							new FileOutputStream(dbTable), "utf-8"));
+		        		
+		        		// match the columns x dataType
 			        	if(columns.size() != dataType.size())
 			        		r.msg = "The number of columns does not correspond to the number of dataTypes. Please check your query.";
 			        	else 
 			        	{
 	        			   	ArrayList<String> finalValues = new ArrayList<String>();
 	                    	
-	                		// fill the values of the columns not included in the query (null)
-	                    	// and put the values in the same order as the columns in the file
-	                    	int index;
+	                		int index;
 	                    	String columnsUpdated = "SYSID(0)|";
 	                    	for (int i = 0; i < columns.size(); i++)
 	                    	{
@@ -301,12 +290,9 @@ public class Database
 	                    	// match the data type in the query with the file
 	                    	// create the string line with the values of the query
 	                    	boolean typeValid = true;
-	                    	String writeValues = "";
+	                    	String writeValues = "INT|";
 	                    	for (int j = 0; j < finalValues.size(); j++) 
 	                    	{
-//	                    		typeValid = DataType.isValid(types.get(j+1), finalValues.get(j));
-//	                    		if(!typeValid) break;
-//	                    		else 
 	                    			writeValues += finalValues.get(j) + "|";
 	                    	}
 	                    	
@@ -316,22 +302,39 @@ public class Database
 	                    	{
 		                		// write the line in the file
 	                    		tableToDisk.write(columnsUpdated);
-	                    		tableToDisk.write(writeValues);
+	                    		tableToDisk.append("\n");
+	                    		tableToDisk.append(writeValues); ;
 	                    		
 	                    		r.success = true;
 	                    		r.msg = "Table " + Database.tableName + " created in the database " + Database.dbName;
 	                    		
 	                    	}
-			                tableToDisk.close();
 			        	}
-		        	}
-		        }
-			}
-			catch (Exception ex)
-			{
-				r.success = false;
-				r.msg = ex.toString();
-			}
+	        		}
+	        		catch (IOException ex)
+	        		{
+	        			r.success = false;
+	        			r.msg = ex.toString();
+	        		}
+	        		finally
+	        		{
+	        			try
+	        			{
+	        				tableToDisk.close();
+	        			}
+	        			catch (Exception ex)
+	        			{
+	        				r.success = false;
+	        				r.msg = ex.toString();
+	        			}
+	        		}
+	        	}
+	        }
+		}
+		catch (Exception ex)
+		{
+			r.success = false;
+			r.msg = ex.toString();
 		}
 		return r;
 	}
