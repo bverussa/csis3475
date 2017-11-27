@@ -3,11 +3,19 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
+import sysObjects.ReturnValue;
 import sysObjects.Util;
 
 public class Login extends JFrame 
 {
+	private JLabel lblUserName, lblPassword;
+	private JTextField txtUserName;
+	private JPasswordField txtPassword;
 	private JButton btnLogin;
 	
 	public Login()
@@ -28,6 +36,16 @@ public class Login extends JFrame
 			}
 		});
 		
+		lblUserName = new JLabel("User Name: ");
+		Util.addComponent(this, lblUserName, 190, 50, 100, 20);
+		txtUserName = new JTextField();
+		Util.addComponent(this, txtUserName, 260, 50, 100, 20);
+		lblPassword = new JLabel("Password: ");
+		Util.addComponent(this, lblPassword, 190, 80, 100, 20);
+		txtPassword = new JPasswordField();
+		txtPassword.setEchoChar('*');
+		Util.addComponent(this, txtPassword, 260, 80, 100, 20);
+		
 		Util.addComponent(this, btnLogin, 210, 110, 100, 20);
 	}
 	
@@ -38,8 +56,15 @@ public class Login extends JFrame
 	
 	private void login()
 	{
-		this.setVisible(false);
-		new ClientApplication();
+		ReturnValue r = User.checkLogin(txtUserName.getText().trim(), String.valueOf(txtPassword.getPassword()));
+		if (r.success)
+		{
+			this.setVisible(false);
+			new ClientApplication();
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(null, r.msg, "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
-
 }

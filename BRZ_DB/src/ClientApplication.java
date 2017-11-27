@@ -10,6 +10,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import sysObjects.ReturnValue;
 import sysObjects.Util;
@@ -36,6 +37,13 @@ public class ClientApplication extends JFrame
 	private JMenuItem mDeleteUser;
 	
 	private JLabel lbl;
+	private JLabel lblCurrentDB;
+	private JLabel lblCurrentUser;
+	private JLabel lblCurrentUserType;
+	
+	private JTextField txtCurrentDB;
+	private JTextField txtCurrentUser;
+	private JTextField txtCurrentUserType;
 	
 	private JTextArea txtQuery;
 	private JScrollPane scQuery;
@@ -43,10 +51,12 @@ public class ClientApplication extends JFrame
 	private JScrollPane scResult;
 	private JButton btnRun;
 	public static String currentDB;
+	public static String userName;
+	public static int userType;
 	
 	public ClientApplication()
 	{
-		this.currentDB = "master";
+		this.currentDB = Util.DB_MASTER;
 		this.setVisible(true);
 		this.setBounds(400, 130, 540, 410);
 		this.setLayout(null);
@@ -57,6 +67,22 @@ public class ClientApplication extends JFrame
 		
 		lbl = new JLabel("Welcome! Choose an option from the menu above to start.");
 		Util.addComponent(this, lbl, 80, 60, 560, 20);
+		
+		lblCurrentDB = new JLabel("Database: ");
+		Util.addComponent(this, lblCurrentDB, 10, 340, 100, 20);
+		txtCurrentDB = new JTextField(currentDB);
+		txtCurrentDB.setEnabled(false);
+		Util.addComponent(this, txtCurrentDB, 70, 340, 100, 20);
+		lblCurrentUser = new JLabel("User Name: ");
+		Util.addComponent(this, lblCurrentUser, 170, 340, 100, 20);
+		txtCurrentUser = new JTextField(userName);
+		txtCurrentUser.setEnabled(false);
+		Util.addComponent(this, txtCurrentUser, 240, 340, 100, 20);
+		lblCurrentUserType = new JLabel("Type:");
+		Util.addComponent(this, lblCurrentUserType, 340, 340, 100, 20);
+		txtCurrentUserType = new JTextField(getUserType());
+		txtCurrentUserType.setEnabled(false);
+		Util.addComponent(this, txtCurrentUserType, 370, 340, 100, 20);
 		
 		txtQuery = new JTextArea();
 		scQuery = new JScrollPane(txtQuery);
@@ -280,5 +306,20 @@ public class ClientApplication extends JFrame
 		r.success = true;
 		r.msg = "Connected to " + ClientApplication.currentDB;
 		return r;
+	}
+	
+	public static String getUserType()
+	{
+		String type;
+		
+		if (userType == 1)
+		{
+			type = "Admin";
+		}
+		else
+		{
+			type = "User";
+		}
+		return type;
 	}
 }

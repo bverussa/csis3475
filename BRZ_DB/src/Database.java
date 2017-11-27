@@ -241,8 +241,8 @@ public class Database
 	public static ReturnValue createTable(String query)
 	{	
 		ReturnValue r = new ReturnValue();
-		// command: create table %tableName% (%columnName% %dataType%, %columnName% %dataType%, ...)
-		// dataTypes: int | text | double | bit
+		// COMMAND: create table %tableName% (%columnName% %dataType%, %columnName% %dataType%, ...)
+		// Data Types: int | text | double | bit
 		Database.tableName = query.split(" ")[2].toLowerCase();
 		Database.dbName = ClientApplication.currentDB;
 		String dbTable = "Databases/" + Database.dbName + "/" + tableName + ".txt";

@@ -1,5 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -130,5 +132,59 @@ public class User extends JFrame
 	{
 		Insert.run("INSERT INTO tblUser values("+name+","+password+","+userType+")", "master");
 		
+	}
+	
+	public static ReturnValue checkLogin(String userName, String password)
+	{
+		ReturnValue r = new ReturnValue();
+		
+		BufferedReader reader = null;
+		String dbRow = null;
+		String userNameDB = "";
+		String passwordDB = "";
+		int userTypeDB;
+		
+		try
+		{
+			reader = new BufferedReader(new FileReader("Databases/" + Util.DB_MASTER + "/" + Util.TBL_USER + ".txt"));
+			int i = 0;
+			while ((dbRow = reader.readLine()) != null)
+			{
+				i++;
+				if (i > 2)
+				{
+					userNameDB = dbRow.split("\\|")[2];
+					passwordDB = dbRow.split("\\|")[3];
+					userTypeDB = Integer.parseInt(dbRow.split("\\|")[4]);
+					
+					if (userNameDB.contains(userName))
+					{ 
+						if (passwordDB.contains(password))
+						{
+							ClientApplication.userName = userNameDB;
+							ClientApplication.userType = userTypeDB;
+							r.success = true;
+							break;
+						}
+						else
+						{
+							r.success = false;
+							r.msg = "Invalid Password! Try again.";
+						}
+					}
+					else
+					{
+						r.success = false;
+						r.msg = "Invalid User Name! Try again.";
+					}
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			r.success = false;
+			r.msg = ex.getMessage();
+		}
+		return r;
 	}
 }
