@@ -153,9 +153,9 @@ public class User extends JFrame
 				i++;
 				if (i > 2)
 				{
-					userNameDB = dbRow.split("\\|")[2];
-					passwordDB = dbRow.split("\\|")[3];
-					userTypeDB = Integer.parseInt(dbRow.split("\\|")[4]);
+					userNameDB = dbRow.split("\\|")[1];
+					passwordDB = dbRow.split("\\|")[2];
+					userTypeDB = Integer.parseInt(dbRow.split("\\|")[3]);
 					
 					if (userNameDB.contains(userName))
 					{ 

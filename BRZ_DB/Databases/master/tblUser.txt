@@ -1,5 +1,4 @@
-SYSID(1)|ID|Username|Password|UsertType
-INT|INT|TEXT|TEX|INT
-1|1|admin|admin|1
-2|2|bruno|csis|1
-3|3|bverussa|csis|2
+ID|Username|Password|UserType|
+INT|TEXT|TEXT|INT|
+1|admin|admin|1|
+2|Cris|Tokoi|NULL|
