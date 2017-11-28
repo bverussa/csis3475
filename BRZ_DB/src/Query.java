@@ -18,7 +18,7 @@ public class Query
 			case "SHOW DATABASE": // SHOW DATABASE
 				return ClientApplication.getCurrentDb();
 			case "SELECT":
-				//return Select.run(query, databaseName);
+				return Select.run(query, databaseName);
 			case "INSERT":
 				return Insert.run(query, databaseName);
 			case "UPDATE":

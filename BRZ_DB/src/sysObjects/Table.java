@@ -9,5 +9,6 @@ public class Table implements Serializable
 	public ArrayList<String> columns;
 	public ArrayList<String> types;
 	
-	public int nextSysID; //stores the next SYSID to insert in the table
+	//TODO: delete sysid 
+	//public int nextSysID; //stores the next SYSID to insert in the table
 }

@@ -50,6 +50,8 @@ public class Insert
 		return success;
 	}
 	
+	// Query for tests
+	// INSERT INTO tblUser (ID, Username, Password) VALUES (3, Cris, Tokoi)
 	public static ReturnValue run(String query, String databaseName) 
 	{
 		ReturnValue r = new ReturnValue();
@@ -85,8 +87,10 @@ public class Insert
 	                		// fill the values of the columns not included in the query (null)
 	                    	// and put the values in the same order as the columns in the file
 	                    	int index;
-	                    	String columnsUpdated = "SYSID(" + tbl.nextSysID + ")|";
-	                    	for (int i = 1; i < tbl.columns.size(); i++)
+	                    	
+	                    	//TODO: delete sysid 
+	                    	//String columnsUpdated = "SYSID(" + tbl.nextSysID + ")|";
+	                    	for (int i = 0; i < tbl.columns.size(); i++)
 	                    	{
 	                    		index = columns.indexOf(tbl.columns.get(i));
 	                    		if (index == -1) // if the column was not included in the query
@@ -94,16 +98,20 @@ public class Insert
 	                    		else
 	                    			finalValues.add(values.get(index));
 	                    		
-	                    		columnsUpdated += tbl.columns.get(i) + "|";
+	                    		//TODO: delete sysid 
+	                    		//columnsUpdated += tbl.columns.get(i) + "|";
 	                    	}
 	                    	
 	                    	// match the data type in the query with the file
 	                    	// create the string line with the values of the query
 	                    	boolean typeValid = true;
-	                    	String writeValues = tbl.nextSysID + "|";
+	                    	
+	                    	//TODO: delete sysid 
+	                    	//String writeValues = tbl.nextSysID + "|";
+	                    	String writeValues = "";
 	                    	for (int j = 0; j < finalValues.size(); j++) 
 	                    	{
-	                    		typeValid = DataType.isValid(tbl.types.get(j+1), finalValues.get(j));
+	                    		typeValid = DataType.isValid(tbl.types.get(j), finalValues.get(j));
 	                    		if(!typeValid) break;
 	                    		else writeValues += finalValues.get(j) + "|";
 	                    	}
@@ -115,13 +123,14 @@ public class Insert
 		                		// write the line in the file
 	                    		if(TableFile.writeLine(databaseName, tableName, writeValues))
 	                    		{
-	                    			if(TableFile.writeLine(databaseName, tableName, columnsUpdated, 0))
-	                    			{
+	                    			//TODO: delete sysid 
+	                    			//if(TableFile.writeLine(databaseName, tableName, columnsUpdated, 0))
+	                    			//{
 		                    			r.msg = "Query executed successfully!";
 		                    			r.success = true;
-	                    			}
-	                    			else
-	                    				r.msg = "Error to update the system ID.";
+	                    			//}
+	                    			//else
+	                    			//	r.msg = "Error to update the system ID.";
 	                    		}
 	                    		else
 	                    			r.msg = "Error to execute the query.";

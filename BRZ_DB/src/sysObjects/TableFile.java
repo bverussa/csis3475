@@ -37,7 +37,7 @@ public class TableFile
 		{
 			FileWriter fwriter = new FileWriter(filename, true);
 	    	BufferedWriter bf = new BufferedWriter(fwriter);
-	    	//bf.append(System.lineSeparator());
+	    	bf.append(System.lineSeparator());
 	        bf.append(value);
 	        bf.close();
 	        
@@ -50,8 +50,8 @@ public class TableFile
 	}
 	
 	
-	//TODO: check a better way to solve it
-	public static boolean writeLine(String databaseName, String tableName, String value, int lineIndex)
+	//TODO: check a better way to solve it or delete sysid 
+	/*public static boolean writeLine(String databaseName, String tableName, String value, int lineIndex)
 	{
 		try
 		{
@@ -68,7 +68,7 @@ public class TableFile
 		{
 			return false;
 		}
-	}
+	}*/
 	
 	public static Table readTable(String databaseName, String tableName)
 	{
@@ -93,9 +93,10 @@ public class TableFile
 	        {
 	        	tbl.columns = new ArrayList<String>(Arrays.asList(data.split("\\|")));
 	        	
+	        	//TODO: delete sysid 
 	        	// the first column contains the SYSID in parenthesis
-	        	tbl.nextSysID = Integer.parseInt(tbl.columns.get(0).split("\\(")[1].replace(")", ""));
-	        	tbl.nextSysID++;
+	        	/*tbl.nextSysID = Integer.parseInt(tbl.columns.get(0).split("\\(")[1].replace(")", ""));
+	        	tbl.nextSysID++;*/
 	        	
 	        	// read the second line (types)
 	            data = br.readLine();
@@ -112,6 +113,37 @@ public class TableFile
 	        br.close();
 	        
 	        return tbl;
+		}
+		catch(Exception ex)
+		{
+			return null;
+		}
+	}
+	
+	public static ArrayList<String> readTableContent(String databaseName, String tableName)
+	{
+		ArrayList<String> results = new ArrayList<String>();
+		String filename = getFullPath(databaseName, tableName);
+		
+		try
+		{
+			FileReader freader = new FileReader(filename);
+	        BufferedReader br = new BufferedReader(freader);
+	        
+	        // read the first 2 lines (columns and types)
+	        br.readLine();
+	        br.readLine();
+	        
+	        String data;
+	        
+	        while ((data = br.readLine()) != null) 
+	        {
+				results.add(data);
+			}
+	        
+	        br.close();
+	        
+	        return results;
 		}
 		catch(Exception ex)
 		{

@@ -275,7 +275,9 @@ public class Database
 	        			   	ArrayList<String> finalValues = new ArrayList<String>();
 	                    	
 	                		int index;
-	                    	String columnsUpdated = "SYSID(0)|";
+	                    	//TODO: delete sysid 
+	                		//String columnsUpdated = "SYSID(0)|";
+	                		String columnsUpdated = "";
 	                    	for (int i = 0; i < columns.size(); i++)
 	                    	{
 	                    		index = columns.indexOf(columns.get(i));
@@ -290,10 +292,13 @@ public class Database
 	                    	// match the data type in the query with the file
 	                    	// create the string line with the values of the query
 	                    	boolean typeValid = true;
-	                    	String writeValues = "INT|";
+	                    	
+	                    	//TODO: delete sysid 
+	                    	//String writeValues = "INT|";
+	                    	String writeValues = "";
 	                    	for (int j = 0; j < finalValues.size(); j++) 
 	                    	{
-	                    			writeValues += finalValues.get(j) + "|";
+	                    		writeValues += finalValues.get(j) + "|";
 	                    	}
 	                    	
 	                    	if(!typeValid) 
@@ -302,8 +307,9 @@ public class Database
 	                    	{
 		                		// write the line in the file
 	                    		tableToDisk.write(columnsUpdated);
-	                    		tableToDisk.append("\n");
-	                    		tableToDisk.append(writeValues); ;
+	                    		tableToDisk.append(System.lineSeparator());
+	                    		
+	                    		tableToDisk.append(writeValues); 
 	                    		
 	                    		r.success = true;
 	                    		r.msg = "Table " + Database.tableName + " created in the database " + Database.dbName;

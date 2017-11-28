@@ -99,11 +99,6 @@ public class ClientApplication extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				// Query for tests
-				// INSERT INTO tblUser (ID, Username, Password) VALUES (3, Cris, Tokoi)
-				
-				//TODO: get database name selected by the user
-				//String databaseName = "master";
 				String databaseName = ClientApplication.currentDB;
 				
 				ReturnValue r = Query.run(txtQuery.getText().trim(), databaseName);
@@ -166,52 +161,6 @@ public class ClientApplication extends JFrame
 		menuBar.add(mDatabase);
 		
 		// Menu Database - end 
-		
-		// Menu Table - begin 
-		
-		/*mTable = new JMenu("Table");
-		mTable.setMnemonic(KeyEvent.VK_T);
-		menuBar.add(mTable);
-		
-		mCreateTable = new JMenuItem("Create");
-		mCreateTable.addActionListener(new ActionListener() 
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				// Create table
-				Database db = new Database();
-				db.createTable();
-				
-			}
-		});
-		mTable.add(mCreateTable);
-		
-		mUpdateTable = new JMenuItem("Update");
-		mUpdateTable.addActionListener(new ActionListener() 
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				// Update table
-			}
-		});
-		mTable.add(mUpdateTable);
-		
-		mDeleteTable = new JMenuItem("Delete");
-		mDeleteTable.addActionListener(new ActionListener() 
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				// Delete table
-			}
-		});
-		mTable.add(mDeleteTable);
-
-		menuBar.add(mTable);*/
-		
-		// Menu Table - end
 		
 		// Menu Query - begin 
 		
