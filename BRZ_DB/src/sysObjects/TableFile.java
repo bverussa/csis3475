@@ -15,7 +15,6 @@ import java.util.List;
 
 public class TableFile 
 {
-	private static final String DATABASE_FOLDER = "Databases";
 	
 	private static String getFullPath(String databaseName, String tableName)
 	{
@@ -24,7 +23,7 @@ public class TableFile
 		return String.format(
 				format, 
 				System.getProperty("user.dir"), 
-				DATABASE_FOLDER, 
+				Util.DATABASE_FOLDER, 
 				databaseName, 
 				tableName);
 	}

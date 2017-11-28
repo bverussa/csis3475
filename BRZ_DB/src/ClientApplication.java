@@ -41,7 +41,7 @@ public class ClientApplication extends JFrame
 	private JLabel lblCurrentUser;
 	private JLabel lblCurrentUserType;
 	
-	private JTextField txtCurrentDB;
+	private static JTextField txtCurrentDB;
 	private JTextField txtCurrentUser;
 	private JTextField txtCurrentUserType;
 	
@@ -80,7 +80,7 @@ public class ClientApplication extends JFrame
 		Util.addComponent(this, txtCurrentUser, 240, 340, 100, 20);
 		lblCurrentUserType = new JLabel("Type:");
 		Util.addComponent(this, lblCurrentUserType, 340, 340, 100, 20);
-		txtCurrentUserType = new JTextField(getUserType());
+		txtCurrentUserType = new JTextField(User.getUserType(userType));
 		txtCurrentUserType.setEnabled(false);
 		Util.addComponent(this, txtCurrentUserType, 370, 340, 100, 20);
 		
@@ -237,7 +237,7 @@ public class ClientApplication extends JFrame
 		
 		if (ClientApplication.currentDB != null && !ClientApplication.currentDB.isEmpty())
 		{
-			r.msg = ClientApplication.currentDB;
+			r.msg = "You are connect to " + ClientApplication.currentDB + " database";
 		}
 		else
 		{
@@ -247,28 +247,19 @@ public class ClientApplication extends JFrame
 		return r;
 	}
 	
+	public static void setCurrentDb()
+	{
+		txtCurrentDB.setText(currentDB);
+	}
+	
 	public static ReturnValue setCurrentDb(String query)
 	{
 		ReturnValue r = new ReturnValue();
 		// CONNECT %DBNAME%
-		ClientApplication.currentDB = query.split(" ")[1].toLowerCase();;
+		ClientApplication.currentDB = query.split(" ")[1].toLowerCase();
+		txtCurrentDB.setText(currentDB);
 		r.success = true;
 		r.msg = "Connected to " + ClientApplication.currentDB;
 		return r;
-	}
-	
-	public static String getUserType()
-	{
-		String type;
-		
-		if (userType == 1)
-		{
-			type = "Admin";
-		}
-		else
-		{
-			type = "User";
-		}
-		return type;
 	}
 }
