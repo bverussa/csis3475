@@ -37,14 +37,14 @@ public class Login extends JFrame
 		});
 		
 		lblUserName = new JLabel("User Name: ");
-		Util.addComponent(this, lblUserName, 190, 50, 100, 20);
+		Util.addComponent(this, lblUserName, 180, 50, 100, 20);
 		txtUserName = new JTextField();
-		Util.addComponent(this, txtUserName, 260, 50, 100, 20);
+		Util.addComponent(this, txtUserName, 260, 50, 120, 20);
 		lblPassword = new JLabel("Password: ");
-		Util.addComponent(this, lblPassword, 190, 80, 100, 20);
+		Util.addComponent(this, lblPassword, 180, 80, 100, 20);
 		txtPassword = new JPasswordField();
 		txtPassword.setEchoChar('*');
-		Util.addComponent(this, txtPassword, 260, 80, 100, 20);
+		Util.addComponent(this, txtPassword, 260, 80, 120, 20);
 		
 		Util.addComponent(this, btnLogin, 210, 110, 100, 20);
 	}

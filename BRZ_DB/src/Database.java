@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,7 +63,7 @@ public class Database
 		
 		if (!Database.dbName.isEmpty())
 		{
-			File database = new File("Databases/" + dbName);
+			File database = new File(Util.DATABASE_FOLDER + "/" + dbName);
 			
 			if (!database.exists())
 			{
@@ -80,6 +81,7 @@ public class Database
 				if (check)
 				{
 					ClientApplication.currentDB = Database.dbName;
+					ClientApplication.setCurrentDb();
 					JOptionPane.showMessageDialog(null, "Database " + dbName + " created!");
 				}
 			}
@@ -91,7 +93,7 @@ public class Database
 		}
 		else
 		{
-			Database.dbName = null;
+			Database.dbName = Util.DB_MASTER;
 			ClientApplication.currentDB = Database.dbName;
 			JOptionPane.showMessageDialog(null, "Please, enter a database name");
 		}
@@ -100,48 +102,58 @@ public class Database
 	public static ReturnValue createDB(String query)
 	{
 		ReturnValue r = new ReturnValue();
-		// CREATE DATABASE %DBNAME%
-		Database.dbName = query.split(" ")[2].toLowerCase();
 		
-		if (!Database.dbName.isEmpty())
+		if (ClientApplication.userType == 1)
 		{
-			File database = new File("Databases/" + dbName);
+			// CREATE DATABASE %DBNAME%
+			Database.dbName = query.split(" ")[2].toLowerCase();
 			
-			if (!database.exists())
+			if (!Database.dbName.isEmpty())
 			{
-				boolean check = false;
+				File database = new File(Util.DATABASE_FOLDER + "/" + dbName);
 				
-				try
+				if (!database.exists())
 				{
-					database.mkdirs();
-					check = true;
+					boolean check = false;
+					
+					try
+					{
+						database.mkdirs();
+						check = true;
+					}
+					catch(SecurityException ex)
+					{
+						r.success = false;
+						r.msg = ex.toString();
+					}
+					
+					if (check)
+					{
+						ClientApplication.currentDB = Database.dbName;
+						ClientApplication.setCurrentDb();
+						r.success = true;
+						r.msg = "Database " + dbName + " created!";
+					}
 				}
-				catch(SecurityException ex)
-				{
-					r.success = false;
-					r.msg = ex.toString();
-				}
-				
-				if (check)
+				else
 				{
 					ClientApplication.currentDB = Database.dbName;
-					r.success = true;
-					r.msg = "Database " + dbName + " created!";
+					r.success = false;
+					r.msg =  "Database " + dbName + " already exist!";
 				}
 			}
 			else
 			{
+				Database.dbName = Util.DB_MASTER;
 				ClientApplication.currentDB = Database.dbName;
 				r.success = false;
-				r.msg =  "Database " + dbName + " already exist!";
+				r.msg = "Please, enter a database name";
 			}
 		}
 		else
 		{
-			Database.dbName = null;
-			ClientApplication.currentDB = Database.dbName;
 			r.success = false;
-			r.msg = "Please, enter a database name";
+			r.msg = "Only adminstrators are allowed to create new database. \nPlease, contact the administrator";
 		}
 		return r;
 	}
@@ -154,7 +166,7 @@ public class Database
 		{	
 			if (!Database.dbName.equals(Util.DB_MASTER))
 			{
-				File database = new File("Databases/" + Database.dbName);
+				File database = new File(Util.DATABASE_FOLDER + "/" + Database.dbName);
 				
 				if (database.exists())
 				{
@@ -168,7 +180,8 @@ public class Database
 			        }
 			        
 			        database.delete();
-			        ClientApplication.currentDB = null;
+			        ClientApplication.currentDB = Util.DB_MASTER;
+			        ClientApplication.setCurrentDb();
 			        JOptionPane.showMessageDialog(null, "Database " + Database.dbName + " deleted!");
 				}
 				else
@@ -178,7 +191,7 @@ public class Database
 			}
 			else
 			{
-				JOptionPane.showMessageDialog(null, "You can not delete MASTER database!");
+				JOptionPane.showMessageDialog(null, "You can not delete " + Util.DB_MASTER + " database!");
 				this.deleteDB();
 			}
 		}
@@ -192,48 +205,58 @@ public class Database
 	public static ReturnValue deleteDB(String query)
 	{
 		ReturnValue r = new ReturnValue();
-		// DELETE DATABASE %DBNAME%
-		Database.dbName = query.split(" ")[2].toLowerCase();
 		
-		if (!Database.dbName.isEmpty())
-		{	
-			if (!Database.dbName.equals(Util.DB_MASTER))
-			{
-				File database = new File("Databases/" + Database.dbName);
-				
-				if (database.exists())
+		if (ClientApplication.userType == 1)
+		{
+			// DELETE DATABASE %DBNAME%
+			Database.dbName = query.split(" ")[2].toLowerCase();
+			
+			if (!Database.dbName.isEmpty())
+			{	
+				if (!Database.dbName.equals(Util.DB_MASTER))
 				{
-					File[] tables = database.listFiles();
-			        if (tables != null)
-			        {
-			            for (int i = 0; i < tables.length; i++)
-			            {
-			                tables[i].delete();
-			            }
-			        }
-			        
-			        database.delete();
-			        ClientApplication.currentDB = null;
-			        r.success = true;
-			        r.msg = "Database " + Database.dbName + " deleted!";
-			        
+					File database = new File(Util.DATABASE_FOLDER + "/" + Database.dbName);
+					
+					if (database.exists())
+					{
+						File[] tables = database.listFiles();
+				        if (tables != null)
+				        {
+				            for (int i = 0; i < tables.length; i++)
+				            {
+				                tables[i].delete();
+				            }
+				        }
+				        
+				        database.delete();
+				        ClientApplication.currentDB = Util.DB_MASTER;
+				        ClientApplication.setCurrentDb();
+				        r.success = true;
+				        r.msg = "Database " + Database.dbName + " deleted!";
+				        
+					}
+					else
+					{
+						r.success = false;
+				        r.msg = "Database " + Database.dbName + " does not exist!";
+					}
 				}
 				else
 				{
 					r.success = false;
-			        r.msg = "Database " + Database.dbName + " does not exist!";
+			        r.msg = "You can not delete " + Util.DB_MASTER + " database!";
 				}
 			}
 			else
 			{
 				r.success = false;
-		        r.msg = "You can not delete MASTER database!";
+		        r.msg = "Please, enter a database name";
 			}
 		}
 		else
 		{
 			r.success = false;
-	        r.msg = "Please, enter a database name";
+			r.msg = "Only adminstrators are allowed to delete a database. \nPlease, contact the administrator";
 		}
 		return r;
 	}
@@ -245,7 +268,7 @@ public class Database
 		// Data Types: int | text | double | bit
 		Database.tableName = query.split(" ")[2].toLowerCase();
 		Database.dbName = ClientApplication.currentDB;
-		String dbTable = "Databases/" + Database.dbName + "/" + tableName + ".txt";
+		String dbTable = Util.DATABASE_FOLDER + "/" + Database.dbName + "/" + tableName + ".txt";
 		Writer tableToDisk = null;
 		
 		try
@@ -282,7 +305,7 @@ public class Database
 	                    		if (index == -1) // if the column was not included in the query
 	                    			finalValues.add("NULL");
 	                    		else
-	                    			finalValues.add(dataType.get(index));
+	                    			finalValues.add(dataType.get(index).toUpperCase());
 	                    		
 	                    		columnsUpdated += columns.get(i) + "|";
 	                    	}
@@ -335,6 +358,45 @@ public class Database
 		{
 			r.success = false;
 			r.msg = ex.toString();
+		}
+		return r;
+	}
+	
+	public static ReturnValue deleteTable(String query)
+	{	
+		ReturnValue r = new ReturnValue();
+		// COMMAND: delete table %tableName%
+		Database.tableName = query.split(" ")[2].toLowerCase();
+		Database.dbName = ClientApplication.currentDB;
+		String dbTable = Util.DATABASE_FOLDER + "/" + Database.dbName + "/" + tableName + ".txt";
+		
+		if (!Database.tableName.equals(Util.TBL_USER.toLowerCase()))
+		{
+			try
+			{
+				File table = new File(dbTable);
+				
+				if (Files.deleteIfExists(table.toPath()))
+				{
+					r.success = true;
+					r.msg = "Table " + Database.tableName + " deleted";	
+				}
+				else
+				{
+					r.success = false;
+					r.msg = "Table " + Database.tableName + " does not exist";	
+				}
+			}
+			catch (Exception ex)
+			{
+				r.success = false;
+				r.msg = ex.toString();
+			}
+		}
+		else
+		{
+			r.success = false;
+			r.msg = "You can not delete " + Util.TBL_USER + " table!";
 		}
 		return r;
 	}

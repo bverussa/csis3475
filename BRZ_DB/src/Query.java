@@ -15,8 +15,9 @@ public class Query
 					return Database.createTable(query);
 			case "CONNECT": // CONNECT %DBNAME%
 				return ClientApplication.setCurrentDb(query);
-			case "SHOW DATABASE": // SHOW DATABASE
-				return ClientApplication.getCurrentDb();
+			case "SHOW": // SHOW DATABASE
+				if (query.split(" ")[1].toUpperCase().equals("DATABASE")) // SHOW DATABASE
+					return ClientApplication.getCurrentDb();
 			case "SELECT":
 				//return Select.run(query, databaseName);
 			case "INSERT":
@@ -26,10 +27,10 @@ public class Query
 			case "DELETE":
 				if (query.split(" ")[1].toUpperCase().equals("DATABASE")) // DELETE DATABASE %DBNAME%
 					return Database.deleteDB(query);
-//				else if (query.split(" ")[1].toUpperCase().equals("TABLE")) // DELETE TABLE %DBNAME%
-//				{
-//					return Database.deleteTable(query);
-//				}
+				else if (query.split(" ")[1].toUpperCase().equals("TABLE")) // DELETE TABLE %DBNAME%
+				{
+					return Database.deleteTable(query);
+				}
 			default: 
 				ReturnValue r = new ReturnValue();
 				r.success = false;

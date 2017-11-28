@@ -130,7 +130,7 @@ public class User extends JFrame
 	
 	public static void InsertUser(String name,String password, String userType)
 	{
-		Insert.run("INSERT INTO tblUser values("+name+","+password+","+userType+")", "master");
+		Insert.run("INSERT INTO tblUser values("+name+","+password+","+userType+")", Util.DB_MASTER);
 		
 	}
 	
@@ -186,5 +186,20 @@ public class User extends JFrame
 			r.msg = ex.getMessage();
 		}
 		return r;
+	}
+	
+	public static String getUserType(int userType)
+	{
+		String type;
+		
+		if (userType == 1)
+		{
+			type = "administrator";
+		}
+		else
+		{
+			type = "user";
+		}
+		return type;
 	}
 }
