@@ -11,6 +11,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.DefaultCaret;
 
 import sysObjects.ReturnValue;
 import sysObjects.Util;
@@ -19,44 +20,37 @@ public class ClientApplication extends JFrame
 {
 	private JMenuBar menuBar; 
 	
-	private JMenu mDatabase;
-	private JMenuItem mCreateDatabase;
-	private JMenuItem mDeleteDatabase;
-	
-	private JMenu mTable;
-	private JMenuItem mCreateTable;
-	private JMenuItem mUpdateTable;
-	private JMenuItem mDeleteTable;
-	
 	private JMenu mQuery;
 	private JMenuItem mNewQuery;
 	
-	private JMenu mUsers;
-	private JMenuItem mNewUser;
-	private JMenuItem mEditUser;
-	private JMenuItem mDeleteUser;
+	private JMenu mHelp;
+	private JMenuItem mHowTo;
 	
 	private JLabel lbl;
 	private JLabel lblCurrentDB;
 	private JLabel lblCurrentUser;
 	private JLabel lblCurrentUserType;
+	private JLabel lblHowTo;
 	
 	private static JTextField txtCurrentDB;
 	private JTextField txtCurrentUser;
 	private JTextField txtCurrentUserType;
 	
+	private JTextArea txtHowTo; 
+	private JScrollPane scHowTo;
 	private JTextArea txtQuery;
 	private JScrollPane scQuery;
 	private JTextArea txtResult;
 	private JScrollPane scResult;
 	private JButton btnRun;
+	
 	public static String currentDB;
 	public static String userName;
 	public static int userType;
 	
 	public ClientApplication()
 	{
-		this.currentDB = Util.DB_MASTER;
+		ClientApplication.currentDB = Util.DB_MASTER;
 		this.setVisible(true);
 		this.setBounds(400, 130, 540, 410);
 		this.setLayout(null);
@@ -70,19 +64,55 @@ public class ClientApplication extends JFrame
 		
 		lblCurrentDB = new JLabel("Database: ");
 		Util.addComponent(this, lblCurrentDB, 10, 340, 100, 20);
-		txtCurrentDB = new JTextField(currentDB);
+		txtCurrentDB = new JTextField(ClientApplication.currentDB);
 		txtCurrentDB.setEnabled(false);
 		Util.addComponent(this, txtCurrentDB, 70, 340, 100, 20);
 		lblCurrentUser = new JLabel("User Name: ");
 		Util.addComponent(this, lblCurrentUser, 170, 340, 100, 20);
-		txtCurrentUser = new JTextField(userName);
+		txtCurrentUser = new JTextField(ClientApplication.userName);
 		txtCurrentUser.setEnabled(false);
 		Util.addComponent(this, txtCurrentUser, 240, 340, 100, 20);
 		lblCurrentUserType = new JLabel("Type:");
 		Util.addComponent(this, lblCurrentUserType, 340, 340, 100, 20);
-		txtCurrentUserType = new JTextField(User.getUserType(userType));
+		txtCurrentUserType = new JTextField(User.getUserType(ClientApplication.userType));
 		txtCurrentUserType.setEnabled(false);
 		Util.addComponent(this, txtCurrentUserType, 370, 340, 100, 20);
+		
+		lblHowTo = new JLabel("How To:");
+		Util.addComponent(this, lblHowTo, 15, 15, 100, 20);
+		txtHowTo = new JTextArea();
+		txtHowTo.setEditable(false);
+		txtHowTo.setLineWrap(true);
+		DefaultCaret caret = (DefaultCaret) txtHowTo.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+		
+		txtHowTo.setText("*** SPECIFICATIONS *** \n\n" +
+			"Databases are folders \n" +
+			"Files inside these folders are the tables \n" +
+			"Files names are the tables names \n" +
+			"Columns are separated by pipeline | \n" +
+			"Every Table file will have the 2 first rows for the table structure.\nFor example: \n" +
+			"ID | NAME | SALARY --> columns names \n" +
+			"INT | TEXT | DOUBLE --> data types \n" +	
+			"Default Database: MASTER \n" +
+			"Default User Table on MASTER: tblUser \n" +
+			"Data types: INT, TEXT, DOUBLE, BIT \n" +
+			"Table User will have a user default (admin, pwd: admin) \n" +
+			"User Types: 1 for administrator, 2 for user \n" +
+			"Table Database will have a default database (master), which will have the \ntable User (tblUser) \n\n" +
+			"*** COMMAND LINES *** \n\n" +
+			"CREATE DATABASE %DBNAME% \n\n" +
+			"DELETE DATABASE %DBNAME% \n\n" +
+			"CONNECT %DBNAME% \n\n" +
+			"SHOW %DBNAME% \n\n" +
+			"CREATE TABLE %TABLENAME% (%COLUMN1% %DATATYPE1%, %COLUMN2% %DATATYPE2%) \n\n" +
+			"DELETE TABLE %TABLENAME%\n\n" +
+			"SELECT * FROM %TABLENAME% WHERE %COLUMN% = %TERM_TO_SEARCH% \n" +
+			"INSERT INTO %TABLENAME% (%COLUMN1%, %COLUMN2%) VALUES (%VAL1%, %VAL2%)" 
+		);
+		scHowTo = new JScrollPane(txtHowTo);
+		Util.addComponent(this, scHowTo, 15, 35, 490, 300);
+		
 		
 		txtQuery = new JTextArea();
 		scQuery = new JScrollPane(txtQuery);
@@ -108,12 +138,13 @@ public class ClientApplication extends JFrame
 		
 		Util.addComponent(this, btnRun, 400, 315, 100, 20);
 		
+		lbl.setVisible(true);
 		setMainVisible(true);
+		setHowToVisible(true);
 	}
 	
 	private void setMainVisible(boolean visible)
 	{
-		lbl.setVisible(visible);
 		txtQuery.setVisible(!visible);
 		scQuery.setVisible(!visible);
 		txtResult.setVisible(!visible);
@@ -121,46 +152,16 @@ public class ClientApplication extends JFrame
 		btnRun.setVisible(!visible);
 	}
 	
+	private void setHowToVisible(boolean visible)
+	{
+		lblHowTo.setVisible(!visible);
+		txtHowTo.setVisible(!visible);
+		scHowTo.setVisible(!visible);
+	}
+	
 	private void createMenu()
 	{
 		menuBar = new JMenuBar();
-
-		// Menu Database - begin 
-		
-		mDatabase = new JMenu("Database");
-		mDatabase.setMnemonic(KeyEvent.VK_D);
-		menuBar.add(mDatabase);
-		
-		mCreateDatabase = new JMenuItem("Create");
-		mCreateDatabase.addActionListener(new ActionListener() 
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				// Create database
-				Database db = new Database();
-				db.createDB();
-				
-			}
-		});
-		mDatabase.add(mCreateDatabase);
-		
-		mDeleteDatabase = new JMenuItem("Delete");
-		mDeleteDatabase.addActionListener(new ActionListener() 
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				// Delete database
-				Database db = new Database();
-				db.deleteDB();
-			}
-		});
-		mDatabase.add(mDeleteDatabase);
-
-		menuBar.add(mDatabase);
-		
-		// Menu Database - end 
 		
 		// Menu Query - begin 
 		
@@ -174,7 +175,9 @@ public class ClientApplication extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
+				lbl.setVisible(false);
 				setMainVisible(false);
+				setHowToVisible(true);
 			}
 		});
 		mQuery.add(mNewQuery);
@@ -183,48 +186,28 @@ public class ClientApplication extends JFrame
 		
 		// Menu Query - end
 		
-		// Menu Users - begin 
+		mHelp = new JMenu("Help");
+		mHelp.setMnemonic(KeyEvent.VK_Q);
+		menuBar.add(mHelp);
 		
-		mUsers = new JMenu("Users");
-		mUsers.setMnemonic(KeyEvent.VK_U);
-		menuBar.add(mUsers);
-		
-		mNewUser = new JMenuItem("New User");
-		mNewUser.addActionListener(new ActionListener() 
+		mHowTo = new JMenuItem("How To");
+		mHowTo.addActionListener(new ActionListener() 
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				new User();
+				lbl.setVisible(false);
+				setMainVisible(true);
+				setHowToVisible(false);
 			}
 		});
-		mUsers.add(mNewUser);
+		mHelp.add(mHowTo);
 		
-		mEditUser = new JMenuItem("Edit User");
-		mEditUser.addActionListener(new ActionListener() 
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				// New Query
-			}
-		});
-		mUsers.add(mEditUser);
+		menuBar.add(mHelp);
 		
-		mDeleteUser = new JMenuItem("Delete User");
-		mDeleteUser.addActionListener(new ActionListener() 
-		{
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				// New Query
-			}
-		});
-		mUsers.add(mDeleteUser);
+		// Menu Help - begin
 		
-		menuBar.add(mUsers);
-		
-		// Menu Users - end
+		// Menu Help - end
 		
 		// Set Menu Bar
 		this.setJMenuBar(menuBar);

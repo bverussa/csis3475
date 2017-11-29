@@ -57,48 +57,6 @@ public class Database
 		}
 	}
 	
-	public void createDB()
-	{
-		Database.dbName = getUserInput(1, "Create Database").toLowerCase().trim();
-		
-		if (!Database.dbName.isEmpty())
-		{
-			File database = new File(Util.DATABASE_FOLDER + "/" + dbName);
-			
-			if (!database.exists())
-			{
-				boolean check = false;
-				
-				try
-				{
-					database.mkdirs();
-					check = true;
-				}
-				catch(SecurityException ex)
-				{
-					JOptionPane.showMessageDialog(null, ex);
-				}
-				if (check)
-				{
-					ClientApplication.currentDB = Database.dbName;
-					ClientApplication.setCurrentDb();
-					JOptionPane.showMessageDialog(null, "Database " + dbName + " created!");
-				}
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(null, "Database " + dbName + " already exist!");
-				ClientApplication.currentDB = Database.dbName;
-			}
-		}
-		else
-		{
-			Database.dbName = Util.DB_MASTER;
-			ClientApplication.currentDB = Database.dbName;
-			JOptionPane.showMessageDialog(null, "Please, enter a database name");
-		}
-	}
-	
 	public static ReturnValue createDB(String query)
 	{
 		ReturnValue r = new ReturnValue();
@@ -156,50 +114,6 @@ public class Database
 			r.msg = "Only adminstrators are allowed to create new database. \nPlease, contact the administrator";
 		}
 		return r;
-	}
-	
-	public void deleteDB()
-	{
-		Database.dbName = getUserInput(1, "Delete Database").toLowerCase();
-		
-		if (!Database.dbName.isEmpty())
-		{	
-			if (!Database.dbName.equals(Util.DB_MASTER))
-			{
-				File database = new File(Util.DATABASE_FOLDER + "/" + Database.dbName);
-				
-				if (database.exists())
-				{
-					File[] tables = database.listFiles();
-			        if (tables != null)
-			        {
-			            for (int i = 0; i < tables.length; i++)
-			            {
-			                tables[i].delete();
-			            }
-			        }
-			        
-			        database.delete();
-			        ClientApplication.currentDB = Util.DB_MASTER;
-			        ClientApplication.setCurrentDb();
-			        JOptionPane.showMessageDialog(null, "Database " + Database.dbName + " deleted!");
-				}
-				else
-				{
-					JOptionPane.showMessageDialog(null, "Database " + Database.dbName + " does not exist!");
-				}
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(null, "You can not delete " + Util.DB_MASTER + " database!");
-				this.deleteDB();
-			}
-		}
-		else
-		{
-			JOptionPane.showMessageDialog(null, "Please, enter a database name");
-			this.deleteDB();
-		}
 	}
 	
 	public static ReturnValue deleteDB(String query)
@@ -298,8 +212,7 @@ public class Database
 	        			   	ArrayList<String> finalValues = new ArrayList<String>();
 	                    	
 	                		int index;
-	                    	//TODO: delete sysid 
-	                		//String columnsUpdated = "SYSID(0)|";
+	                    	
 	                		String columnsUpdated = "";
 	                    	for (int i = 0; i < columns.size(); i++)
 	                    	{
@@ -309,15 +222,13 @@ public class Database
 	                    		else
 	                    			finalValues.add(dataType.get(index).toUpperCase());
 	                    		
-	                    		columnsUpdated += columns.get(i) + "|";
+	                    		columnsUpdated += columns.get(i).toUpperCase() + "|";
 	                    	}
 	                    	
 	                    	// match the data type in the query with the file
 	                    	// create the string line with the values of the query
 	                    	boolean typeValid = true;
 	                    	
-	                    	//TODO: delete sysid 
-	                    	//String writeValues = "INT|";
 	                    	String writeValues = "";
 	                    	for (int j = 0; j < finalValues.size(); j++) 
 	                    	{

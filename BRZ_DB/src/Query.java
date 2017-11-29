@@ -15,15 +15,13 @@ public class Query
 					return Database.createTable(query);
 			case "CONNECT": // CONNECT %DBNAME%
 				return ClientApplication.setCurrentDb(query);
-			case "SHOW": // SHOW DATABASE
-				if (query.split(" ")[1].toUpperCase().equals("DATABASE")) // SHOW DATABASE
+			case "SHOW": // SHOW %DBNAME%
+				if (query.split(" ")[1].toUpperCase().equals("DATABASE"))
 					return ClientApplication.getCurrentDb();
 			case "SELECT":
 				return Select.run(query, databaseName);
 			case "INSERT":
 				return Insert.run(query, databaseName);
-			case "UPDATE":
-				//return Update.run(query, databaseName);
 			case "DELETE":
 				if (query.split(" ")[1].toUpperCase().equals("DATABASE")) // DELETE DATABASE %DBNAME%
 					return Database.deleteDB(query);
