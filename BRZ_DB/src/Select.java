@@ -13,7 +13,6 @@ import sysObjects.Util;
 public class Select
 {
 	private final static String PATTERN = "SELECT ([\\w\\d_.,*\\s]+) FROM ([\\w\\d_]+)([WHERE\\s[\\w\\d_.=]+]+)";
-	//private final static String PATTERN = "SELECT\\s.+FROM\\s.+[WHERE\\s.*]?";
 	private final static String REGEX = 
 			"((?<=(SELECT\\s))[\\w\\d_.,*\\s]+(?=FROM\\s))|((?<=(FROM\\s))[\\w\\d_]+(?=\\s*))|((?<=(WHERE\\s))[\\w\\d_.=\\s]+(?=\\s*))";
 	
@@ -50,9 +49,6 @@ public class Select
 		return success;
 	}
     
-    // Query for tests
-	// SELECT * FROM tblUser 
-    // SELECT ID, Username FROM tblUser
 	public static ReturnValue run(String query, String databaseName) 
 	{
 		ReturnValue r = new ReturnValue();
@@ -153,9 +149,6 @@ public class Select
             		
             		r.msg = qResult.toString();
         			r.success = true;
-            		
-            		// get the results and show only the columns specified in the select 
-            		
         		}
         	}
     	}
