@@ -158,7 +158,7 @@ public class TableFile
 	public static boolean columnsValid(Table tbl, ArrayList<String> columns)
 	{
 		for (String col : columns)
-			if (!tbl.columns.contains(col.trim()))
+			if (!tbl.columns.contains(col.trim().toUpperCase()))
 				return false;
 		
 		return true;

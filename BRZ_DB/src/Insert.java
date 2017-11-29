@@ -34,7 +34,7 @@ public class Insert
         	// get the columns to insert
         	if (matcher.find())
 	        {
-        		line = matcher.group(0).replace(" ", "");
+        		line = matcher.group(0).replace(" ", "").toUpperCase();
 	        	columns = new ArrayList<String>(Arrays.asList(line.split(",")));
 	        	
 	        	// get the values
@@ -88,7 +88,7 @@ public class Insert
 	                    	
 	                    	for (int i = 0; i < tbl.columns.size(); i++)
 	                    	{
-	                    		index = columns.indexOf(tbl.columns.get(i));
+	                    		index = columns.indexOf(tbl.columns.get(i).toUpperCase());
 	                    		if (index == -1) // if the column was not included in the query
 	                    			finalValues.add("NULL");
 	                    		else
