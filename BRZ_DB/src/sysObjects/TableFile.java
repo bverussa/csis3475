@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import dataStructures.MyBinaryTree;
+
 public class TableFile 
 {
 	
@@ -143,6 +145,41 @@ public class TableFile
 	        br.close();
 	        
 	        return results;
+		}
+		catch(Exception ex)
+		{
+			return null;
+		}
+	}
+	
+	public static MyBinaryTree<SelectData> readTableContent(String databaseName, String tableName, int columnCompare)
+	{
+		MyBinaryTree<SelectData> binTree = new MyBinaryTree<SelectData>();
+		String filename = getFullPath(databaseName, tableName);
+		
+		try
+		{
+			FileReader freader = new FileReader(filename);
+	        BufferedReader br = new BufferedReader(freader);
+	        
+	        // read the first 2 lines (columns and types)
+	        br.readLine();
+	        br.readLine();
+	        
+	        String data;
+	        String[] values;
+	        SelectData selectData;
+	        
+	        while ((data = br.readLine()) != null) 
+	        {
+	        	values = data.split("\\|");
+	        	selectData = new SelectData(values, columnCompare);
+				binTree.add(selectData);
+			}
+	        
+	        br.close();
+	        
+	        return binTree;
 		}
 		catch(Exception ex)
 		{

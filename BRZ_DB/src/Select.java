@@ -3,15 +3,19 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import dataStructures.MyBinaryTree;
 import sysObjects.ReturnValue;
+import sysObjects.SelectData;
 import sysObjects.Table;
 import sysObjects.TableFile;
 import sysObjects.Util;
 
 public class Select
 {
-	private final static String PATTERN = "SELECT ([\\w\\d_.,*\\s]+) FROM ([\\w\\d_]+)";
-	private final static String REGEX = "((?<=(SELECT\\s))[\\w\\d_.,*\\s]+(?=FROM\\s))|((?<=(FROM\\s))[\\w\\d_]+(?=\\s*))";
+	private final static String PATTERN = "SELECT ([\\w\\d_.,*\\s]+) FROM ([\\w\\d_]+)([WHERE\\s[\\w\\d_.=]+]+)";
+	//private final static String PATTERN = "SELECT\\s.+FROM\\s.+[WHERE\\s.*]?";
+	private final static String REGEX = 
+			"((?<=(SELECT\\s))[\\w\\d_.,*\\s]+(?=FROM\\s))|((?<=(FROM\\s))[\\w\\d_]+(?=\\s*))|((?<=(WHERE\\s))[\\w\\d_.=\\s]+(?=\\s*))";
 	
 	private static String tableName; 
     private static ArrayList<String> columns;
@@ -23,6 +27,7 @@ public class Select
 		Matcher matcher = pattern.matcher(query);
 		boolean success = false;
 		String line;
+		whereClause = null;
 		
 		// there are 3 groups to match: table name, columns and where condition
 		if (matcher.find())
@@ -37,12 +42,8 @@ public class Select
             	tableName = matcher.group(0);
             	success = true;
             	
-            	// get the where clause
-	        	/*if (matcher.find())
-		        {
-		        	whereClause = matcher.group(0);
-		        	
-		        }*/
+            	// get the where clause (optional)
+	        	if (matcher.find()) whereClause = matcher.group(0);
 	        }
 		}
 		
@@ -60,7 +61,7 @@ public class Select
         if (!Util.isCommandValid(query, PATTERN)) 
         	r.msg = "Invalid query. Please check if you entered the correct command.";
         else
-    	{
+    	{        	
         	// extract information from query using regular expression and matcher
         	// (table name, columns, and whether it is using where clause or not)
         	if(!parseQuery(query))
@@ -122,14 +123,36 @@ public class Select
             				
             				qResult.append(System.lineSeparator());
             			}
-            			
-            			r.msg = qResult.toString();
-            			r.success = true;
             		}
             		else // if there is where clause, create the binary tree with nodes of type SelectData
             		{
+            			// find the column to compare in the where clause
+            			String[] where = whereClause.split("=");
+            			int columnCompare = tbl.columns.indexOf(where[0].trim());
+            			String valueSearch = where[1];
+            			
             			// do the search on the tree based on where clause
+            			MyBinaryTree<SelectData> binTree = TableFile.readTableContent(databaseName, tableName, columnCompare);
+            			
+            			String[] fields = new String[tbl.columns.size()];
+            			fields[columnCompare] = valueSearch.trim();
+            			SelectData itemToSearch = new SelectData(fields, columnCompare);
+            			
+            			ArrayList<SelectData> itemsFound = binTree.find(itemToSearch);
+            			for (SelectData selData : itemsFound)
+            			{
+            				for (int v : selectCols)
+            				{
+            					qResult.append(selData.fields[v]);
+	    						qResult.append("|");
+            				}
+    						
+    						qResult.append(System.lineSeparator());
+            			}
             		}
+            		
+            		r.msg = qResult.toString();
+        			r.success = true;
             		
             		// get the results and show only the columns specified in the select 
             		

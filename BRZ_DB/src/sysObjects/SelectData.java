@@ -1,16 +1,19 @@
 package sysObjects;
 
-public class SelectData
+public class SelectData implements Comparable<SelectData>
 {
-	private String tableName;
-	private String[] fields;
-	//private int[] selectedFieldsIds;
-	
-	public SelectData(String tableName, String databaseName)
+	public String[] fields;
+	private int col;
+
+	public SelectData(String[] fields, int columnCompare)
 	{
-		this.tableName = tableName;
-		
-		Table tbl = TableFile.readTable(databaseName, tableName);
-		this.fields = (String[]) tbl.columns.toArray();
+		this.fields = fields;
+		this.col = columnCompare;
+	}
+	
+	@Override
+	public int compareTo(SelectData selectData)
+	{
+		return fields[col].compareTo(selectData.fields[col]);
 	}
 }
