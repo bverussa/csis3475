@@ -52,7 +52,7 @@ public class ClientApplication extends JFrame
 	{
 		ClientApplication.currentDB = Util.DB_MASTER;
 		this.setVisible(true);
-		this.setBounds(400, 130, 540, 410);
+		this.setBounds(400, 130, 540, 440);
 		this.setLayout(null);
 		this.setTitle("CSIS3475 Project: Database");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

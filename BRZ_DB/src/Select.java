@@ -34,7 +34,7 @@ public class Select
 		{
         	// get the columns to insert
     		line = matcher.group(0).replace(" ", "");
-        	columns = new ArrayList<String>(Arrays.asList(line.split(",")));
+        	columns = new ArrayList<String>(Arrays.asList(line.toUpperCase().split(",")));
 	        	
         	if (matcher.find())
 	        {
@@ -43,7 +43,7 @@ public class Select
             	success = true;
             	
             	// get the where clause (optional)
-	        	if (matcher.find()) whereClause = matcher.group(0);
+	        	if (matcher.find()) whereClause = matcher.group(0).toUpperCase();
 	        }
 		}
 		
