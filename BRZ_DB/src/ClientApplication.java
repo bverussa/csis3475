@@ -220,7 +220,7 @@ public class ClientApplication extends JFrame
 		
 		if (ClientApplication.currentDB != null && !ClientApplication.currentDB.isEmpty())
 		{
-			r.msg = "You are connect to " + ClientApplication.currentDB + " database";
+			r.msg = "You are connected to " + ClientApplication.currentDB + " database";
 		}
 		else
 		{
