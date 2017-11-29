@@ -63,20 +63,20 @@ public class ClientApplication extends JFrame
 		Util.addComponent(this, lbl, 80, 60, 560, 20);
 		
 		lblCurrentDB = new JLabel("Database: ");
-		Util.addComponent(this, lblCurrentDB, 10, 340, 100, 20);
+		Util.addComponent(this, lblCurrentDB, 10, 345, 100, 20);
 		txtCurrentDB = new JTextField(ClientApplication.currentDB);
 		txtCurrentDB.setEnabled(false);
-		Util.addComponent(this, txtCurrentDB, 70, 340, 100, 20);
+		Util.addComponent(this, txtCurrentDB, 75, 345, 100, 20);
 		lblCurrentUser = new JLabel("User Name: ");
-		Util.addComponent(this, lblCurrentUser, 170, 340, 100, 20);
+		Util.addComponent(this, lblCurrentUser, 185, 345, 100, 20);
 		txtCurrentUser = new JTextField(ClientApplication.userName);
 		txtCurrentUser.setEnabled(false);
-		Util.addComponent(this, txtCurrentUser, 240, 340, 100, 20);
+		Util.addComponent(this, txtCurrentUser, 260, 345, 100, 20);
 		lblCurrentUserType = new JLabel("Type:");
-		Util.addComponent(this, lblCurrentUserType, 340, 340, 100, 20);
+		Util.addComponent(this, lblCurrentUserType, 370, 345, 100, 20);
 		txtCurrentUserType = new JTextField(User.getUserType(ClientApplication.userType));
 		txtCurrentUserType.setEnabled(false);
-		Util.addComponent(this, txtCurrentUserType, 370, 340, 100, 20);
+		Util.addComponent(this, txtCurrentUserType, 410, 345, 95, 20);
 		
 		lblHowTo = new JLabel("How To:");
 		Util.addComponent(this, lblHowTo, 15, 15, 100, 20);
@@ -107,7 +107,7 @@ public class ClientApplication extends JFrame
 			"SHOW %DBNAME% \n\n" +
 			"CREATE TABLE %TABLENAME% (%COLUMN1% %DATATYPE1%, %COLUMN2% %DATATYPE2%) \n\n" +
 			"DELETE TABLE %TABLENAME%\n\n" +
-			"SELECT * FROM %TABLENAME% WHERE %COLUMN% = %TERM_TO_SEARCH% \n" +
+			"SELECT * FROM %TABLENAME% WHERE %COLUMN% = %TERM_TO_SEARCH% \n\n" +
 			"INSERT INTO %TABLENAME% (%COLUMN1%, %COLUMN2%) VALUES (%VAL1%, %VAL2%)" 
 		);
 		scHowTo = new JScrollPane(txtHowTo);
@@ -136,7 +136,7 @@ public class ClientApplication extends JFrame
 			}
 		});
 		
-		Util.addComponent(this, btnRun, 400, 315, 100, 20);
+		Util.addComponent(this, btnRun, 404, 310, 100, 20);
 		
 		lbl.setVisible(true);
 		setMainVisible(true);

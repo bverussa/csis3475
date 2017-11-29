@@ -46,7 +46,7 @@ public class Login extends JFrame
 		txtPassword.setEchoChar('*');
 		Util.addComponent(this, txtPassword, 250, 80, 120, 20);
 		
-		Util.addComponent(this, btnLogin, 210, 110, 100, 20);
+		Util.addComponent(this, btnLogin, 270, 110, 80, 20);
 	}
 	
 	public static void main(String[] args) 
