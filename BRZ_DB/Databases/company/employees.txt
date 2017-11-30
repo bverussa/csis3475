@@ -1,0 +1,12 @@
+ID|FIRSTNAME|LASTNAME|EMAIL|GENDER|SALARY|
+INT|TEXT|TEXT|TEXT|TEXT|DOUBLE|
+1|Terese|Bakster|tbakster0@cocolog-nifty.com|Female|814.3|
+2|Coralie|Muggleton|cmuggleton1@sina.com.cn|Female|186.63|
+3|Claudius|Roggieri|croggieri2@live.com|Male|504.95|
+4|Avigdor|Brose|abrose3@weather.com|Male|34.09|
+5|Cordelie|D'Agostini|cdagostini4@chicagotribune.com|Female|532.6|
+6|Basilius|McComas|bmccomas5@forbes.com|Male|362.07|
+7|Henrik|Crauford|hcrauford6@intel.com|Male|218.87|
+8|Woodrow|Martensen|wmartensen7@parallels.com|Male|948.23|
+9|Brant|Bassingham|bbassingham8@mapquest.com|Male|23.76|
+10|Manfred|Bonhomme|mbonhomme9@rakuten.co.jp|Male|455.26|

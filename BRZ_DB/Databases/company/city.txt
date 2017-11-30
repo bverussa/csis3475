@@ -1,0 +1,8 @@
+ID|NAME|PROVINCE|
+INT|TEXT|TEXT|
+1|Vancouver|BC|
+2|Toronto|ON|
+3|Quebec City|QC|
+4|Ottawa|ON|
+5|Victoria|BC|
+6|Halifax|NS|

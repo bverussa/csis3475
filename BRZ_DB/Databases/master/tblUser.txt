@@ -1,0 +1,5 @@
+ID|USERNAME|PASSWORD|USERTYPE|
+INT|TEXT|TEXT|INT|
+1|admin|admin|1|
+2|Cris|Tokoi|2|
+3|bruno|csis|1|
